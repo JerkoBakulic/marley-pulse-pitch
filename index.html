@@ -642,6 +642,10 @@ h1{max-width:none;text-wrap:pretty}
 #s15 .rm{height:660px}
 #s15 .rm{top:180px;height:690px}
 #s15 .mes{top:282px}
+/* video de remate a pantalla completa */
+#s16 .vid{transition:all .7s var(--ease)}
+#s16 .vid.full{position:fixed;left:0;top:0;width:1920px;height:1080px;border-radius:0;z-index:100;box-shadow:none}
+#s16 .vid.full video{object-fit:contain}
 /* notas del orador */
 #notas{position:fixed;left:0;right:0;bottom:0;max-height:38vh;overflow:auto;background:rgba(27,23,18,.94);color:#F4F0E8;font-size:20px;line-height:1.5;padding:22px 34px;display:none;z-index:50}
 #notas.ve{display:block}
@@ -1096,7 +1100,7 @@ const escenas={
    let k=0;const iv=setInterval(()=>{k++;const p=Math.min(1,k/45),e=1-Math.pow(1-p,4);n.textContent='$'+(fin*e).toFixed(1).replace('.',',');if(p>=1)clearInterval(iv)},40);timers.push(iv);
    s.querySelectorAll('.bar i').forEach((b,i)=>{b.style.height=0;T(()=>b.style.height=b.dataset.h+'px',400+i*120)})},
  s15(s){s.querySelectorAll('.h').forEach((h,i)=>{h.style.opacity=0;h.style.transition='opacity .7s, filter .7s';h.style.filter='blur(8px)';T(()=>{h.style.opacity=1;h.style.filter='none'},500+i*600)})},
- s16(s){rv.currentTime=0;rp.style.opacity=1}
+ s16(s){rv.currentTime=0;rp.style.opacity=1;remateGrande(false)}
 };
 function ciclo(s,fn,dur){fn(s);T(function r(){fn(s);T(r,dur)},dur)}
 const $=(s,k)=>s.querySelector(`[data-el="${k}"]`);
@@ -1194,8 +1198,10 @@ vf.addEventListener('click',()=>{if(vfv.paused){vfv.play();vfp.style.opacity=0}e
 vfv.addEventListener('ended',()=>{vfp.style.opacity=1});
 // video de remate (última lámina): clic para reproducir con sonido
 const rf=document.getElementById('vidfin'),rv=rf.querySelector('video'),rp=rf.querySelector('.play');
-rf.addEventListener('click',()=>{if(rv.paused){rv.play();rp.style.opacity=0}else{rv.pause();rp.style.opacity=1}});
-rv.addEventListener('ended',()=>{rp.style.opacity=1});
+// al reproducirse ocupa toda la pantalla (es el remate de la presentación)
+function remateGrande(on){rf.classList.toggle('full',on);if(on&&!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{})}
+rf.addEventListener('click',()=>{if(rv.paused){remateGrande(true);rv.currentTime=rv.ended?0:rv.currentTime;rv.play();rp.style.opacity=0}else{rv.pause();rp.style.opacity=1}});
+rv.addEventListener('ended',()=>{rp.style.opacity=1;setTimeout(()=>remateGrande(false),1200)});
 
 // ---------- navegación ----------
 const notas=document.getElementById('notas');
@@ -1211,6 +1217,7 @@ function ir(n){
   if(typeof musicaSegunLamina==='function')musicaSegunLamina();
 }
 addEventListener('keydown',e=>{
+  if(rf.classList.contains('full')&&['Escape','ArrowLeft','Backspace'].includes(e.key)){e.preventDefault();rv.pause();rp.style.opacity=1;remateGrande(false);return}
   if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();ir(cur+1)}
   else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();ir(cur-1)}
   else if(e.key==='Home')ir(0);else if(e.key==='End')ir(slides.length-1);
