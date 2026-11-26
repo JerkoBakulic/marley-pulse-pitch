@@ -252,6 +252,9 @@ h1 em{font-style:normal;color:var(--verde)}
 #s13 .col{position:absolute;bottom:60px;width:150px}
 #s13 .col .bar{position:absolute;bottom:0;left:0;right:0;display:flex;flex-direction:column-reverse}
 #s13 .col .bar i{display:block;height:0;transition:height 1.2s var(--ease)}
+#s13 .col .bar i{position:relative}
+#s13 .col .bar em{position:absolute;inset:0;display:grid;place-items:center;font-style:normal;font-size:16px;font-weight:700;color:#fff;white-space:nowrap;opacity:0;transition:opacity .5s 1.3s}
+.on#s13 .col .bar em{opacity:1}
 #s13 .col .lab{position:absolute;top:100%;left:-10px;right:-10px;text-align:center;margin-top:12px;font-size:17px;font-weight:700;line-height:1.25}
 #s13 .col .lab span{display:block;font-weight:500;color:var(--gris);font-size:15px}
 #s13 .col .val{position:absolute;left:0;right:0;text-align:center;font-size:22px;font-weight:800;opacity:0;transition:opacity .5s 1.2s}
@@ -996,7 +999,7 @@ body.remate .nav-flecha{opacity:0;pointer-events:none}
 <section class="slide" id="s13" data-notas="El presupuesto se libera por hitos. Sumamos lo que faltaba: un <b>equipo dedicado los 12 meses</b>: jefe de proyecto, diseñador UX y analista de datos, con sueldos de mercado. Así el proyecto no depende de una gerencia que ya está ocupada. Reemplazamos las horas sueltas que hacían esas funciones. Total: $207,2 millones con reserva del 10%, el 94% del techo de $220 millones. Si Marley se detiene en el día 90, la exposición es de $58,4 millones.">
   <div class="cuerpo">
     <h1 class="tipeo" data-tipeo="Invertimos por etapas, solo si cada hito funciona"></h1>
-    <div class="ley in" style="--d:.4"><span><i style="background:var(--verde3)"></i>Equipo dedicado</span><span><i style="background:var(--verde2)"></i>Tecnología y operación</span><span><i style="background:var(--oro)"></i>Reserva 10 %</span><span><i style="background:var(--oro);height:4px"></i>Acumulado</span></div>
+    <div class="ley in" style="--d:.4"><span><i style="background:var(--verde3)"></i>Equipo dedicado: $9,0 M al mes, fijo</span><span><i style="background:var(--verde2)"></i>Tecnología y operación</span><span><i style="background:var(--oro)"></i>Reserva 10 %</span><span><i style="background:var(--oro);height:4px"></i>Acumulado</span></div>
     <div class="graf" id="graf"></div>
     <div class="lado">
       <div class="total in" style="--d:.6"><span class="num" data-cuenta="207.2">$0</span> M <small>en 12 meses</small></div>
@@ -1216,7 +1219,7 @@ function logis(s){
   const g=document.getElementById('graf'),base=500,esc=base/220; // 220 M = 500 px
   let html=`<div class="techo" style="bottom:${60+220*esc}px"><span>Techo $220 M</span></div>`,acum=0,pts=[];
   F.forEach((f,i)=>{const tot=f[2]+f[3],left=40+i*205;acum+=tot;
-    const segs=i<4?`<i data-h="${(f[2]*esc).toFixed(0)}" style="background:var(--verde3);border-radius:0 0 10px 10px"></i><i data-h="${(f[3]*esc).toFixed(0)}" style="background:var(--verde2);border-radius:10px 10px 0 0"></i>`:`<i data-h="${(f[3]*esc).toFixed(0)}" style="background:var(--oro);border-radius:10px"></i>`;
+    const segs=i<4?`<i data-h="${(f[2]*esc).toFixed(0)}" style="background:var(--verde3);border-radius:0 0 10px 10px"><em>$9,0 M × ${f[2]/9} meses</em></i><i data-h="${(f[3]*esc).toFixed(0)}" style="background:var(--verde2);border-radius:10px 10px 0 0"></i>`:`<i data-h="${(f[3]*esc).toFixed(0)}" style="background:var(--oro);border-radius:10px"></i>`;
     html+=`<div class="col" style="left:${left}px;height:${tot*esc}px"><div class="bar">${segs}</div><div class="val" style="bottom:${tot*esc+10}px">$${tot.toFixed(1).replace('.',',')}</div><div class="lab">${f[0]}<span>${f[1]}</span></div></div>`;
     pts.push([left+75,560-60-acum*esc]);});
   const ult=pts[pts.length-1];html+=`<svg class="acum" width="1060" height="560"><path pathLength="1" d="M ${pts.map(p=>p.join(' ')).join(' L ')}"/><circle cx="${ult[0]}" cy="${ult[1]}" r="7" fill="#F2B705"/><text x="${ult[0]-14}" y="${ult[1]+34}" text-anchor="end" font-size="20" font-weight="700" fill="#8A6500">Acumulado $207,2 M</text></svg>`;
