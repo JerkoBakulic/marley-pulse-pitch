@@ -1100,7 +1100,7 @@ const escenas={
    let k=0;const iv=setInterval(()=>{k++;const p=Math.min(1,k/45),e=1-Math.pow(1-p,4);n.textContent='$'+(fin*e).toFixed(1).replace('.',',');if(p>=1)clearInterval(iv)},40);timers.push(iv);
    s.querySelectorAll('.bar i').forEach((b,i)=>{b.style.height=0;T(()=>b.style.height=b.dataset.h+'px',400+i*120)})},
  s15(s){s.querySelectorAll('.h').forEach((h,i)=>{h.style.opacity=0;h.style.transition='opacity .7s, filter .7s';h.style.filter='blur(8px)';T(()=>{h.style.opacity=1;h.style.filter='none'},500+i*600)})},
- s16(s){rv.currentTime=0;remateGrande(true);rp.style.opacity=0;rv.play().catch(()=>{rp.style.opacity=1;remateGrande(false)})}
+ s16(s){rv.currentTime=0;if(cargando){rp.style.opacity=1;remateGrande(false);return}remateGrande(true);rp.style.opacity=0;rv.play().catch(()=>{rp.style.opacity=1;remateGrande(false)})}
 };
 function ciclo(s,fn,dur){fn(s);T(function r(){fn(s);T(r,dur)},dur)}
 const $=(s,k)=>s.querySelector(`[data-el="${k}"]`);
@@ -1213,7 +1213,6 @@ function ir(n){
   const s=slides[n];s.classList.remove('on');void s.offsetWidth;s.classList.add('on');cur=n;
   escenas[s.id]?.(s);
   notas.innerHTML=`<b>${n+1}.</b> `+(s.dataset.notas||'');
-  history.replaceState(null,'','#'+(n+1));
   if(typeof musicaSegunLamina==='function')musicaSegunLamina();
 }
 addEventListener('keydown',e=>{
@@ -1227,7 +1226,8 @@ addEventListener('keydown',e=>{
 });
 document.getElementById('viewport').addEventListener('click',e=>{if(e.target.closest('#vidsol')||e.target.closest('#vidfin'))return;ir(e.clientX>innerWidth*0.25?cur+1:cur-1)});
 setTimeout(()=>document.getElementById('ayuda').style.opacity=0,5000);
-ir((parseInt(location.hash.slice(1))||1)-1);
+// al abrir el link no se reproduce nada solo: el video parte únicamente al llegar avanzando
+let cargando=true;if(location.hash)history.replaceState(null,'',location.pathname);ir(0);cargando=false;
 </script>
 </body>
 </html>
