@@ -654,6 +654,20 @@ h1{max-width:none;text-wrap:pretty}
 .nav-flecha.izq{left:12px}.nav-flecha.der{right:12px}
 @media (hover:none){.nav-flecha{opacity:.85;width:60px;height:60px}}
 body.remate .nav-flecha{opacity:0;pointer-events:none}
+/* lámina de gracias */
+#s18 .gr-titulo{position:absolute;left:0;top:60px;font-size:230px;font-weight:800;letter-spacing:-.05em;line-height:1;color:var(--tinta)}
+#s18 .gr-sub{position:absolute;left:12px;top:300px;font-size:64px;font-weight:700;color:var(--verde);letter-spacing:-.02em}
+#s18 .gr-pulso{position:absolute;left:0;top:420px}
+#s18 .gr-pulso path{fill:none;stroke:var(--oro);stroke-width:7;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 10px rgba(242,183,5,.5))}
+.on#s18 .gr-pulso path{animation:traza 2.2s .5s var(--ease) forwards}
+#s18 .gr-marca{position:absolute;left:0;top:590px;display:flex;align-items:center;gap:26px}
+#s18 .gr-ico{width:110px;height:110px;border-radius:30px;display:grid;place-items:center;background:linear-gradient(140deg,var(--oro),var(--verde2) 50%,var(--verde));box-shadow:0 16px 40px rgba(94,126,41,.35)}
+#s18 .gr-marca b{display:block;font-size:64px;letter-spacing:-.03em;line-height:1}
+#s18 .gr-marca b span{color:var(--verde)}
+#s18 .gr-marca small{display:block;font-size:28px;color:var(--gris);margin-top:8px;font-weight:600}
+#s18 .gr-marca img{height:120px;margin-left:60px;padding-left:60px;border-left:2px solid var(--linea)}
+#s18 .gr-equipo{position:absolute;left:0;top:780px;font-size:24px;color:var(--gris);font-weight:600}
+#s18 .gr-preg{position:absolute;right:0;top:250px;padding:22px 40px;border-radius:40px;background:var(--verde3);color:#fff;font-size:40px;font-weight:800}
 /* notas del orador */
 #notas{position:fixed;left:0;right:0;bottom:0;max-height:38vh;overflow:auto;background:rgba(27,23,18,.94);color:#F4F0E8;font-size:20px;line-height:1.5;padding:22px 34px;display:none;z-index:50}
 #notas.ve{display:block}
@@ -1047,6 +1061,24 @@ body.remate .nav-flecha{opacity:0;pointer-events:none}
   </div>
 </section>
 
+<!-- 18 · Gracias -->
+<section class="slide" id="s18" data-notas="Muchas gracias por su atención. Quedamos atentos a sus preguntas.">
+  <div class="halo" style="left:1150px;top:-220px;width:1000px;height:820px;background:var(--oro)"></div>
+  <div class="halo" style="left:-200px;top:620px;width:900px;height:700px;background:var(--verde2)"></div>
+  <div class="cuerpo">
+    <div class="gr-titulo tipeo" data-tipeo="Gracias"></div>
+    <div class="gr-sub in" style="--d:.7">por su atención</div>
+    <svg class="gr-pulso" viewBox="0 0 1700 120" width="1700" height="120"><path pathLength="1" d="M0 60 H700 L740 10 L790 112 L835 30 L865 60 H1700"/></svg>
+    <div class="gr-marca in" style="--d:1.3">
+      <div class="gr-ico"><svg width="62" height="36" viewBox="0 0 200 116"><path d="M6 58 H62 L80 14 L104 102 L124 34 L138 58 H194" fill="none" stroke="#fff" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div><b>Marley <span>Pulse</span></b><small>Sin perder el hilo.</small></div>
+      <img src="assets/logo_marley_tinta.png" alt="Marley Coffee">
+    </div>
+    <div class="gr-equipo in" style="--d:1.6">Juan Diego Aracu · Jerko Bakulic · María Isabel Fernández · Camila Muñoz · Cristóbal Olivares · Andrea Ramírez</div>
+    <div class="gr-preg in" style="--d:2">¿Preguntas?</div>
+  </div>
+</section>
+
 </div></div>
 <audio id="musica" src="assets/musica_portada.mp3" loop preload="auto"></audio>
 <button class="nav-flecha izq" id="ant" aria-label="Lámina anterior"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -1211,7 +1243,7 @@ const rf=document.getElementById('vidfin'),rv=rf.querySelector('video'),rp=rf.qu
 // al reproducirse ocupa toda la pantalla (es el remate de la presentación)
 function remateGrande(on){rf.classList.toggle('full',on);if(on&&!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{})}
 rf.addEventListener('click',()=>{if(rv.paused){remateGrande(true);rv.currentTime=rv.ended?0:rv.currentTime;rv.play();rp.style.opacity=0}else{rv.pause();rp.style.opacity=1}});
-rv.addEventListener('ended',()=>{rp.style.opacity=1;setTimeout(()=>remateGrande(false),1200)});
+rv.addEventListener('ended',()=>{rp.style.opacity=1;setTimeout(()=>{remateGrande(false);ir(slides.length-1)},900)});
 
 // ---------- navegación ----------
 const notas=document.getElementById('notas');
