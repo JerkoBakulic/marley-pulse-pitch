@@ -1136,7 +1136,7 @@ addEventListener('pointerdown',()=>{ctx();if(cur===0&&musica.paused&&!silencio)m
 // ---------- escenas ----------
 const escenas={
  s3b(s){s.querySelectorAll('[data-w]').forEach((b,i)=>{b.style.width=0;T(()=>b.style.width=b.dataset.w+'%',700+i*250)})},
- s5(s){vfv.currentTime=0},
+ s5(s){if(vfv.currentTime>0||!vfv.paused){vfv.pause();vfv.load()}vfp.style.opacity=1},
  s6(s){ciclo(s,inbound,9800)}, s7(s){ciclo(s,ecom,9000)}, s8(s){ciclo(s,logis,10500)},
  s13(s){const n=s.querySelector('[data-cuenta]');const fin=+n.dataset.cuenta;
    let k=0;const iv=setInterval(()=>{k++;const p=Math.min(1,k/45),e=1-Math.pow(1-p,4);n.textContent='$'+(fin*e).toFixed(1).replace('.',',');if(p>=1)clearInterval(iv)},40);timers.push(iv);
