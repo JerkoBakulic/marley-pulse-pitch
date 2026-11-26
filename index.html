@@ -1,0 +1,1226 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marley Pulse · Propuesta final</title>
+<style>
+@font-face{font-family:Inter;src:url(assets/inter.woff2) format("woff2");font-weight:400 800;font-display:block}
+:root{
+  --tinta:#1B1712;--gris:#6B6459;--gris2:#9A9387;--linea:#E7E1D6;--chip:#F4F0E8;--crema:#F7F4EF;
+  --verde:#5E7E29;--verde2:#86A83A;--verde3:#2C4210;--oro:#F2B705;--oro2:#F7D35A;--rojo:#DB0032;--ok:#3F9A63;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#fff;overflow:hidden}
+body{font-family:Inter,system-ui,sans-serif;color:var(--tinta);-webkit-font-smoothing:antialiased;font-feature-settings:"tnum" 1,"cv11" 1}
+::selection{background:var(--oro2);color:var(--tinta)}
+#viewport{position:fixed;inset:0;overflow:hidden;background:#fff}
+#stage{width:1920px;height:1080px;position:absolute;left:50%;top:50%;transform-origin:center center}
+.slide{position:absolute;inset:0;background:#fff;overflow:hidden;opacity:0;visibility:hidden;transition:opacity .5s var(--ease),visibility 0s .5s}
+.slide.on{opacity:1;visibility:visible;transition:opacity .5s var(--ease)}
+/* marco */
+.marco{position:absolute;inset:28px;border:1.5px solid var(--linea);border-radius:22px;pointer-events:none}
+.pie{position:absolute;left:64px;right:64px;bottom:44px;display:flex;align-items:center;gap:18px;font-size:17px;color:var(--gris2);font-weight:500}
+.pie img{height:34px}
+.pie .tri{display:flex;flex-direction:column;gap:3px;width:56px}
+.pie .tri i{display:block;height:3px;border-radius:2px}
+.pie .n{margin-left:auto;font-variant-numeric:tabular-nums}
+.cuerpo{position:absolute;left:110px;right:110px;top:92px;bottom:120px}
+h1{font-size:62px;font-weight:800;letter-spacing:-.035em;line-height:1.06;max-width:1500px;text-wrap:balance}
+h1 em{font-style:normal;color:var(--verde)}
+.sub{font-size:27px;color:var(--gris);margin-top:18px;max-width:1200px;line-height:1.4;text-wrap:pretty}
+/* entrada: aparece con desenfoque, como el video */
+.in{opacity:0;filter:blur(10px);translate:0 18px}
+.on .in{animation:entra .9s var(--ease) forwards;animation-delay:calc(var(--d,0) * 1s)}
+@keyframes entra{to{opacity:1;filter:blur(0);translate:0 0}}
+.tipeo .ch{opacity:0;filter:blur(12px);display:inline-block;white-space:pre}
+.on .tipeo .ch{animation:ch .5s var(--ease) forwards}
+@keyframes ch{to{opacity:1;filter:blur(0)}}
+/* halo de marca: degradado difuso */
+.halo{position:absolute;border-radius:50%;filter:blur(90px);opacity:.18;pointer-events:none}
+.pill{display:inline-flex;align-items:center;gap:10px;padding:8px 18px;border-radius:30px;font-weight:700;font-size:20px}
+.pill::before{content:"";width:10px;height:10px;border-radius:50%;background:currentColor}
+.tarjeta{background:#fff;border-radius:26px;box-shadow:0 22px 60px rgba(40,50,10,.10),0 0 0 1px rgba(0,0,0,.04)}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- 1 portada ---------- */
+#s1 .logo{position:absolute;left:110px;top:120px;width:250px}
+#s1 .titulo{position:absolute;left:110px;top:430px;font-size:190px;font-weight:800;letter-spacing:-.05em;line-height:.9}
+#s1 .titulo span{color:var(--verde)}
+#s1 .pulso{position:absolute;left:0;top:430px;width:1920px;height:260px;pointer-events:none}
+#s1 .pulso path{fill:none;stroke:var(--oro);stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 10px rgba(242,183,5,.55))}
+.on#s1 .pulso path{animation:traza 2.4s .6s var(--ease) forwards}
+@keyframes traza{to{stroke-dashoffset:0}}
+#s1 .lema{position:absolute;left:116px;top:680px;font-size:40px;font-weight:600;color:var(--tinta);max-width:1450px;line-height:1.25}
+#s1 .equipo{position:absolute;left:116px;bottom:150px;font-size:21px;color:var(--gris);line-height:1.6}
+#s1 .equipo b{color:var(--tinta);font-weight:600}
+
+/* ---------- 2 problema ---------- */
+#s2 .grande{font-size:96px;font-weight:800;letter-spacing:-.045em;line-height:1.02;max-width:1560px;margin-top:60px;text-wrap:balance}
+#s2 .grande .r{color:var(--rojo)}
+#s2 .kpis{position:absolute;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(7,1fr);gap:14px}
+#s2 .kpi{padding:22px 20px 20px;border-radius:20px;background:var(--chip)}
+#s2 .kpi .v{font-size:38px;font-weight:800;letter-spacing:-.03em;color:var(--verde3)}
+#s2 .kpi .l{font-size:17px;color:var(--gris);margin-top:6px;line-height:1.3}
+#s2 .kpis-t{position:absolute;left:0;bottom:170px;font-size:22px;font-weight:700;color:var(--gris)}
+
+/* ---------- 3 causa raíz ---------- */
+#s3 .col{position:absolute;top:250px;width:780px}
+#s3 .sist{display:flex;flex-direction:column;gap:34px}
+#s3 .fila .t{display:flex;justify-content:space-between;font-size:24px;font-weight:700}
+#s3 .fila .t span:last-child{color:var(--gris);font-weight:500;font-size:20px}
+#s3 .barra{height:22px;border-radius:12px;background:var(--chip);margin-top:12px;overflow:hidden}
+#s3 .barra i{display:block;height:100%;width:0;border-radius:12px;background:linear-gradient(90deg,var(--verde),var(--verde2));transition:width 1.6s var(--ease)}
+#s3 .barra i.sub2{background:linear-gradient(90deg,var(--oro),var(--oro2))}
+#s3 .hueco{margin-top:40px;font-size:24px;line-height:1.45;color:var(--gris);max-width:740px}
+#s3 .hueco b{color:var(--rojo)}
+#s3 .insight{left:960px;top:200px;padding:36px 44px}
+#s3 .insight .q{font-size:40px;font-weight:700;letter-spacing:-.02em;line-height:1.25}
+#s3 .insight .q mark{background:linear-gradient(transparent 60%,var(--oro2) 60%);background-size:0 100%;background-repeat:no-repeat;transition:background-size 1s var(--ease) 1.4s;color:inherit}
+.on#s3 .insight .q mark{background-size:100% 100%}
+#s3 .insight .src{margin-top:26px;font-size:20px;color:var(--gris);line-height:1.5}
+#s3 .raiz{position:absolute;left:960px;top:690px;width:780px;display:flex;align-items:center;gap:22px;padding:28px 34px;border-radius:22px;background:var(--verde3);color:#fff}
+#s3 .raiz b{font-size:44px;letter-spacing:-.03em}
+#s3 .raiz span{font-size:21px;color:#D9E4C2;line-height:1.4}
+
+/* ---------- 4 matriz ---------- */
+#s4 .mat{position:absolute;left:0;top:200px;width:1000px;height:560px}
+#s4 .cuad{position:absolute;padding:14px 18px;font-size:17px;font-weight:800;letter-spacing:.04em}
+#s4 .eje{position:absolute;font-size:17px;color:var(--gris);font-weight:600}
+#s4 .pt{position:absolute;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:19px;box-shadow:0 8px 22px rgba(0,0,0,.18);scale:0;transition:scale .7s var(--ease)}
+.on#s4 .pt{scale:1}
+#s4 .pide{position:absolute;left:1080px;top:200px;width:620px}
+#s4 .pide h3{font-size:24px;color:var(--gris);font-weight:700;margin-bottom:18px}
+#s4 .p{padding:24px 28px;border-radius:20px;margin-bottom:16px;background:var(--chip)}
+#s4 .p b{font-size:32px;letter-spacing:-.02em;display:block}
+#s4 .p span{font-size:20px;color:var(--gris);line-height:1.4;display:block;margin-top:6px}
+#s4 .p .vs{display:flex;gap:8px;margin-top:12px}
+#s4 .p .vs i{font-style:normal;font-size:16px;font-weight:800;color:#fff;padding:4px 10px;border-radius:10px}
+
+/* ---------- 5 solución ---------- */
+#s5 .vid{position:absolute;left:calc(50% - 610px);top:110px;width:1220px;height:686px;border-radius:28px;overflow:hidden;box-shadow:0 30px 80px rgba(40,50,10,.22);background:#000;cursor:pointer}
+#s5 .pv{position:absolute;left:0;right:0;bottom:-6px;text-align:center;font-size:40px;font-weight:800;letter-spacing:-.03em}
+#s5 .pv span{color:var(--verde)}
+#s5 .play{position:absolute;inset:0;display:grid;place-items:center;background:rgba(27,23,18,.25);transition:opacity .4s}
+#s5 .play div{width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+#s5 .vid video{width:100%;height:100%;object-fit:cover;display:block}
+#s5 .prop{position:absolute;left:980px;top:190px;width:720px}
+#s5 .prop .pv{font-size:46px;font-weight:800;letter-spacing:-.035em;line-height:1.12}
+#s5 .prop .pv span{color:var(--verde)}
+#s5 .fr{margin-top:36px;display:flex;flex-direction:column;gap:16px}
+#s5 .fr div{display:flex;gap:18px;align-items:center;font-size:24px;line-height:1.3}
+#s5 .fr s{color:var(--gris2);text-decoration-color:var(--rojo);text-decoration-thickness:3px}
+#s5 .fr svg{flex:none}
+#s5 .canales{position:absolute;left:0;bottom:0;display:flex;gap:16px}
+#s5 .canales span{padding:14px 26px;border-radius:16px;background:var(--chip);font-size:22px;font-weight:700}
+
+/* ---------- 6-8 mitad datos / mitad equipo ---------- */
+.mitad h1{max-width:1080px}
+.mitad .datos{position:absolute;left:0;top:230px;width:820px}
+.flujo{display:flex;flex-direction:column;gap:0;margin-top:10px}
+.paso{display:flex;gap:20px;align-items:center;padding:16px 0;opacity:.35;transition:opacity .5s var(--ease)}
+.paso.ya{opacity:1}
+.paso .bola{flex:none;width:34px;height:34px;border-radius:50%;background:var(--chip);display:grid;place-items:center;font-size:16px;font-weight:800;color:var(--gris);transition:all .5s var(--ease)}
+.paso.ya .bola{background:var(--verde);color:#fff}
+.paso.act .bola{background:var(--oro);color:var(--tinta);box-shadow:0 0 0 8px rgba(242,183,5,.22)}
+.paso .tx b{display:block;font-size:34px;letter-spacing:-.01em}
+.paso .tx span{font-size:19px;color:var(--gris);line-height:1.4}
+.meta{display:inline-flex;align-items:center;gap:12px;margin-top:30px;padding:12px 22px;border-radius:16px;background:linear-gradient(90deg,var(--verde),var(--verde2));color:#fff;font-weight:700;font-size:22px}
+.valida{margin-top:34px;padding:26px 30px;border-radius:22px;background:var(--chip);max-width:760px}
+.valida small{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:800;color:var(--verde);letter-spacing:.04em;text-transform:uppercase}
+.valida small::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--oro)}
+.valida p{font-size:31px;font-weight:700;letter-spacing:-.02em;line-height:1.25;margin-top:10px}
+.valida p mark{background:linear-gradient(transparent 60%,var(--oro2) 60%);color:inherit}
+.valida span{display:block;font-size:17px;color:var(--gris);margin-top:10px}
+/* teléfono */
+.tel{position:absolute;right:40px;top:50px;width:410px;height:810px;border-radius:64px;background:#141210;padding:16px;box-shadow:0 50px 100px rgba(30,30,10,.30),inset 0 0 0 2px #3a352e}
+.tel .pant{width:100%;height:100%;border-radius:50px;background:var(--crema);overflow:hidden;position:relative}
+.tel .isla{position:absolute;top:14px;left:50%;translate:-50% 0;width:120px;height:34px;border-radius:20px;background:#141210;z-index:5}
+.app{position:absolute;inset:0;padding:70px 22px 22px;font-size:15px}
+.app .barra-app{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.app .ico{width:34px;height:34px;border-radius:10px;background:linear-gradient(140deg,var(--oro),var(--verde2) 50%,var(--verde))}
+.app .barra-app b{font-size:18px}
+.app .barra-app small{margin-left:auto;color:var(--gris);font-size:13px}
+.item{background:#fff;border-radius:16px;padding:13px 14px;margin-bottom:10px;display:flex;gap:11px;align-items:center;box-shadow:0 4px 14px rgba(40,50,10,.06);transition:all .6s var(--ease)}
+.item .dot{flex:none;width:12px;height:12px;border-radius:50%}
+.item .n{font-weight:700;font-size:15px}
+.item .d{font-size:13px;color:var(--gris);margin-top:2px}
+.item .a{margin-left:auto;font-size:12px;font-weight:700;color:var(--verde);text-align:right;white-space:nowrap}
+.alerta{position:absolute;left:14px;right:14px;top:-140px;z-index:4;background:#fff;border-radius:20px;padding:14px 16px;box-shadow:0 18px 40px rgba(0,0,0,.18);display:flex;gap:12px;align-items:center;transition:top .7s var(--ease)}
+.alerta.ve{top:58px}
+.alerta .ico{flex:none;width:38px;height:38px}
+.alerta b{display:block;font-size:15px}
+.alerta span{font-size:13px;color:var(--gris)}
+.card{background:#fff;border-radius:18px;padding:16px;box-shadow:0 4px 14px rgba(40,50,10,.06);margin-bottom:12px}
+.card h4{font-size:13px;color:var(--gris);font-weight:600;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em}
+.medidor{height:12px;border-radius:8px;background:var(--chip);overflow:hidden}
+.medidor i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--rojo),#E8891A);border-radius:8px;transition:width 1.4s var(--ease)}
+.boton{display:block;text-align:center;padding:15px;border-radius:16px;font-weight:700;font-size:16px;color:#fff;background:linear-gradient(90deg,var(--verde),var(--verde2));transition:all .3s var(--ease)}
+.boton.click{scale:.94;filter:brightness(.92)}
+.boton.listo{background:var(--tinta)}
+.dedo{position:absolute;width:46px;height:46px;border-radius:50%;background:rgba(27,23,18,.28);border:3px solid rgba(255,255,255,.85);z-index:6;opacity:0;transition:all .6s var(--ease);pointer-events:none}
+.dedo.ve{opacity:1}
+.chk{display:flex;align-items:center;gap:10px;font-size:15px;padding:6px 0;opacity:.3;transition:opacity .4s}
+.chk.ya{opacity:1}
+.chk i{width:22px;height:22px;border-radius:50%;background:var(--chip);display:grid;place-items:center;transition:background .4s}
+.chk.ya i{background:var(--ok)}
+.chk i svg{opacity:0}.chk.ya i svg{opacity:1}
+.fila-p{display:flex;justify-content:space-between;font-size:15px;padding:7px 0;border-bottom:1px solid var(--linea)}
+.fila-p:last-child{border:0}
+.toast{position:absolute;left:22px;right:22px;bottom:-120px;background:var(--verde3);color:#fff;border-radius:18px;padding:16px;font-weight:700;font-size:16px;transition:bottom .7s var(--ease);display:flex;gap:10px;align-items:center;z-index:4}
+.toast.ve{bottom:24px}
+/* tablet */
+.tab{position:absolute;right:0;top:110px;width:900px;height:640px;border-radius:44px;background:#141210;padding:18px;box-shadow:0 50px 100px rgba(30,30,10,.30),inset 0 0 0 2px #3a352e}
+.tab .pant{width:100%;height:100%;border-radius:30px;background:var(--crema);overflow:hidden;position:relative;padding:26px 30px;font-size:16px}
+.linea-t{display:flex;align-items:flex-start;margin:22px 0 26px;position:relative}
+.linea-t::before{content:"";position:absolute;left:20px;right:20px;top:17px;height:4px;background:var(--linea);border-radius:2px}
+.linea-t .prog{position:absolute;left:20px;top:17px;height:4px;width:0;background:var(--verde);border-radius:2px;transition:width 1s var(--ease)}
+.est{flex:1;text-align:center;position:relative;z-index:1;font-size:14px;font-weight:600;color:var(--gris)}
+.est i{display:grid;place-items:center;margin:0 auto 8px;width:38px;height:38px;border-radius:50%;background:#fff;border:4px solid var(--linea);transition:all .5s var(--ease)}
+.est.ya i{border-color:var(--verde);background:var(--verde)}
+.est.ya{color:var(--tinta)}
+.est.alerta-e i{border-color:#E8891A;background:#E8891A}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.aviso{border-radius:16px;padding:14px 16px;background:#FFF4E0;border:1px solid #F5C98A;font-size:15px;opacity:0;translate:0 12px;transition:all .6s var(--ease)}
+.aviso.ve{opacity:1;translate:0 0}
+.aviso b{display:block;margin-bottom:4px}
+
+/* ---------- 9 objetivos ---------- */
+#s9 .gen{margin-top:34px;padding:30px 36px;border-radius:24px;background:var(--verde3);color:#fff;font-size:30px;font-weight:600;line-height:1.35;max-width:1700px}
+#s9 .gen b{color:var(--oro2)}
+#s9 .tabla{margin-top:26px;display:grid;grid-template-columns:1fr 560px 300px;max-width:1700px}
+#s9 .tabla > div{padding:18px 18px;border-bottom:1px solid var(--linea);font-size:26px;line-height:1.35}
+#s9 .tabla .h{font-size:16px;font-weight:800;color:var(--gris);letter-spacing:.06em;text-transform:uppercase;padding-top:6px}
+#s9 .tabla .c{font-weight:700;color:var(--verde3)}
+#s9 .smart{position:absolute;right:0;top:4px;display:flex;gap:8px}
+#s9 .smart span{width:58px;height:58px;border-radius:16px;display:grid;place-items:center;font-size:28px;font-weight:800;background:var(--chip);color:var(--verde3)}
+
+/* ---------- 10 validación ---------- */
+#s10 .proceso{display:flex;gap:0;margin-top:80px;align-items:stretch}
+#s10 .caja{flex:1;padding:22px 20px;border-radius:20px;background:var(--chip);position:relative}
+#s10 .caja + .caja{margin-left:34px}
+#s10 .caja + .caja::before{content:"";position:absolute;left:-26px;top:50%;width:18px;height:18px;border-top:3px solid var(--gris2);border-right:3px solid var(--gris2);rotate:45deg;translate:0 -50%}
+#s10 .caja b{font-size:28px;display:block}
+#s10 .caja span{font-size:19px;color:var(--gris);line-height:1.4;display:block;margin-top:6px}
+#s10 .caja.fin{background:var(--verde3);color:#fff}
+#s10 .caja.fin span{color:#D9E4C2}
+#s10 .dos{display:grid;grid-template-columns:1.25fr 1fr;gap:28px;margin-top:60px}
+#s10 .lado{padding:44px 46px;border-radius:26px;border:1.5px solid var(--linea);position:relative;overflow:hidden}
+#s10 .lado h3{font-size:34px;letter-spacing:-.02em}
+#s10 .lado .q{font-size:18px;color:var(--gris);margin-top:4px}
+#s10 .ajuste{display:flex;gap:16px;align-items:center;margin-top:20px;font-size:27px}
+#s10 .ajuste i{font-style:normal;flex:none;font-weight:800;color:#fff;font-size:16px;padding:6px 10px;border-radius:10px;background:var(--verde)}
+#s10 .ajuste s{color:var(--gris2);text-decoration-color:var(--rojo);text-decoration-thickness:2px}
+#s10 .crit{display:flex;gap:26px;margin-top:20px}
+#s10 .crit div{flex:1;padding:18px;border-radius:18px;background:var(--chip)}
+#s10 .crit b{font-size:80px;letter-spacing:-.03em;color:var(--verde3);display:block}
+#s10 .crit span{font-size:22px;color:var(--gris)}
+
+/* ---------- 11 riesgos ---------- */
+#s11 .heat{position:absolute;left:0;top:210px;display:grid;grid-template-columns:repeat(5,118px);grid-template-rows:repeat(5,92px);gap:6px}
+#s11 .heat div{border-radius:12px;display:grid;place-items:center;font-size:20px;font-weight:700;color:rgba(27,23,18,.35);position:relative}
+#s11 .heat .marc{position:absolute;width:30px;height:30px;border-radius:50%;background:var(--tinta);color:#fff;font-size:14px;display:grid;place-items:center;scale:0;transition:scale .6s var(--ease)}
+.on#s11 .heat .marc{scale:1}
+#s11 .ejes{position:absolute;left:0;top:720px;font-size:17px;color:var(--gris)}
+#s11 .lista{position:absolute;left:720px;top:200px;right:0;display:flex;flex-direction:column;gap:12px}
+#s11 .r{display:grid;grid-template-columns:54px 1fr 220px;gap:20px;align-items:center;padding:22px 24px;border-radius:18px;background:#fff;box-shadow:0 8px 26px rgba(40,50,10,.07),0 0 0 1px rgba(0,0,0,.04)}
+#s11 .r .s{width:54px;height:54px;border-radius:14px;background:var(--rojo);color:#fff;display:grid;place-items:center;font-size:23px;font-weight:800}
+#s11 .r b{font-size:28px}
+#s11 .r span{font-size:17px;color:var(--gris);display:block;margin-top:3px;line-height:1.35}
+#s11 .r .due{font-size:21px;font-weight:700;color:var(--verde3)}
+
+/* ---------- 12 SLA ---------- */
+#s12 svg.tri{position:absolute;left:0;top:170px}
+#s12 svg.tri .lado{fill:none;stroke:var(--verde);stroke-width:5;stroke-dasharray:1;stroke-dashoffset:1}
+.on#s12 svg.tri .lado{animation:traza 1.8s .4s var(--ease) forwards}
+#s12 .v{position:absolute;text-align:center;width:300px}
+#s12 .v b{display:block;font-size:30px;letter-spacing:-.02em}
+#s12 .v span{font-size:18px;color:var(--gris);line-height:1.35;display:block;margin-top:4px}
+#s12 .centro{position:absolute;left:310px;top:560px;width:300px;text-align:center;font-size:24px;font-weight:800;color:var(--verde3)}
+#s12 .comp{position:absolute;left:980px;top:190px;right:0;display:flex;flex-direction:column;gap:14px}
+#s12 .c{display:grid;grid-template-columns:200px 1fr;gap:20px;align-items:center;padding:18px 24px;border-radius:18px;background:var(--chip)}
+#s12 .c .t{font-size:44px;font-weight:800;letter-spacing:-.03em;color:var(--verde3)}
+#s12 .c .t small{font-size:20px;font-weight:700}
+#s12 .c b{font-size:26px;display:block}
+#s12 .c span{font-size:17px;color:var(--gris)}
+
+/* ---------- 13 presupuesto ---------- */
+#s13 .graf{position:absolute;left:0;top:200px;width:1060px;height:560px}
+#s13 .graf .techo{position:absolute;left:0;right:0;border-top:3px dashed var(--rojo)}
+#s13 .graf .techo span{position:absolute;right:0;top:-34px;font-size:18px;font-weight:700;color:var(--rojo)}
+#s13 .col{position:absolute;bottom:60px;width:150px}
+#s13 .col .bar{position:absolute;bottom:0;left:0;right:0;display:flex;flex-direction:column-reverse}
+#s13 .col .bar i{display:block;height:0;transition:height 1.2s var(--ease)}
+#s13 .col .lab{position:absolute;top:100%;left:-10px;right:-10px;text-align:center;margin-top:12px;font-size:17px;font-weight:700;line-height:1.25}
+#s13 .col .lab span{display:block;font-weight:500;color:var(--gris);font-size:15px}
+#s13 .col .val{position:absolute;left:0;right:0;text-align:center;font-size:22px;font-weight:800;opacity:0;transition:opacity .5s 1.2s}
+.on#s13 .col .val{opacity:1}
+#s13 .acum{position:absolute;inset:0;pointer-events:none}
+#s13 .acum path{fill:none;stroke:var(--oro);stroke-width:4;stroke-dasharray:1;stroke-dashoffset:1}
+.on#s13 .acum path{animation:traza 1.6s 1.4s var(--ease) forwards}
+#s13 .ley{position:absolute;left:0;top:150px;display:flex;gap:26px;font-size:18px;color:var(--gris)}
+#s13 .ley span{display:flex;align-items:center;gap:8px}
+#s13 .ley i{width:16px;height:16px;border-radius:4px}
+#s13 .lado{position:absolute;left:1160px;top:190px;right:0}
+#s13 .total{white-space:nowrap;font-size:80px;font-weight:800;letter-spacing:-.045em;line-height:1}
+#s13 .total small{font-size:30px;letter-spacing:-.01em;color:var(--gris)}
+#s13 .pct{margin-top:10px;font-size:22px;color:var(--gris)}
+#s13 .pct b{color:var(--verde3)}
+#s13 .eq{margin-top:30px;padding:24px 26px;border-radius:22px;background:var(--verde3);color:#fff}
+#s13 .eq h3{font-size:22px;margin-bottom:12px}
+#s13 .eq div{display:flex;justify-content:space-between;font-size:19px;padding:5px 0;color:#E8EFD9}
+#s13 .eq div b{color:#fff}
+#s13 .eq p{font-size:16px;color:#C9D8A8;margin-top:10px;line-height:1.4}
+
+/* ---------- 14 BSC ---------- */
+#s14 .bsc{margin-top:40px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+#s14 .per{border-radius:24px;padding:24px 22px;background:var(--chip);display:flex;flex-direction:column;gap:14px}
+#s14 .per h3{font-size:18px;text-transform:uppercase;letter-spacing:.08em;color:var(--gris);font-weight:800}
+#s14 .k{background:#fff;border-radius:18px;padding:18px 18px 16px;box-shadow:0 4px 14px rgba(40,50,10,.05)}
+#s14 .k b{font-size:23px;display:block}
+#s14 .bm{display:flex;align-items:baseline;gap:10px;margin-top:8px}
+#s14 .bm .b{font-size:30px;font-weight:800;color:var(--gris2);letter-spacing:-.02em}
+#s14 .bm .flecha{color:var(--gris2);font-size:22px}
+#s14 .bm .m{font-size:46px;font-weight:800;color:var(--verde3);letter-spacing:-.03em}
+#s14 .k span{display:block;font-size:15px;color:var(--gris);margin-top:6px;line-height:1.35}
+#s14 .k.warn{outline:2px dashed var(--oro);outline-offset:-2px}
+#s14 .nota{margin-top:22px;font-size:19px;color:var(--gris);max-width:1600px;line-height:1.45}
+#s14 .nota b{color:var(--tinta)}
+
+/* ---------- 15 roadmap ---------- */
+#s15 .rm{position:absolute;left:0;right:0;top:330px;height:400px}
+#s15 .eje{position:absolute;left:0;right:0;top:120px;height:6px;border-radius:3px;background:var(--linea)}
+#s15 .eje i{position:absolute;left:0;top:0;height:100%;width:0;border-radius:3px;background:linear-gradient(90deg,var(--verde),var(--verde2),var(--oro));transition:width 3s var(--ease) .4s}
+.on#s15 .eje i{width:100%}
+#s15 .mes{position:absolute;top:142px;font-size:16px;color:var(--gris2);font-weight:600;translate:-50% 0}
+#s15 .h{position:absolute;top:0;translate:-50% 0;width:290px;text-align:center}
+#s15 .h .rombo{width:34px;height:34px;rotate:45deg;margin:105px auto 0;background:#fff;border:5px solid var(--verde);border-radius:6px}
+#s15 .h .tt{position:absolute;bottom:310px;left:0;right:0}
+#s15 .h .tt b{font-size:24px;display:block;letter-spacing:-.01em}
+#s15 .h .tt span{font-size:17px;color:var(--gris);display:block;margin-top:4px;line-height:1.35}
+#s15 .h .pts{margin-top:40px;font-size:40px;font-weight:800;color:var(--verde3);letter-spacing:-.03em}
+#s15 .h .pts small{display:block;font-size:15px;font-weight:600;color:var(--gris)}
+#s15 .piloto{position:absolute;left:0;right:0;bottom:0;display:flex;gap:10px;align-items:center}
+#s15 .piloto .lab{font-size:18px;font-weight:800;color:var(--gris);width:190px;line-height:1.3}
+#s15 .d{flex:1;padding:12px 14px;border-radius:14px;background:var(--chip);font-size:15px;color:var(--gris);line-height:1.3}
+#s15 .d b{display:block;font-size:18px;color:var(--tinta)}
+#s15 .d.dec{background:var(--oro);color:var(--tinta)}
+
+/* ---------- 16 cierre ---------- */
+#s16 .vid{position:absolute;right:0;top:140px;width:1000px;height:562px;border-radius:26px;overflow:hidden;box-shadow:0 30px 80px rgba(40,50,10,.22);background:#000;cursor:pointer}
+#s16 .vid video{width:100%;height:100%;object-fit:cover;display:block}
+#s16 .play{position:absolute;inset:0;display:grid;place-items:center;background:rgba(27,23,18,.25);transition:opacity .4s}
+#s16 .play div{width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+#s16 .frase{position:absolute;left:0;top:170px;width:620px;font-size:54px;font-weight:800;letter-spacing:-.04em;line-height:1.08}
+#s16 .frase span{color:var(--verde)}
+#s16 .pide{position:absolute;left:0;top:560px;width:620px;padding:28px 30px;border-radius:22px;background:var(--verde3);color:#fff}
+#s16 .pide b{font-size:28px;display:block;letter-spacing:-.02em}
+#s16 .pide span{font-size:19px;color:#D9E4C2;line-height:1.45;display:block;margin-top:8px}
+
+
+/* ---------- ajuste de distribución: llenar el lienzo ---------- */
+#s2 .grande{font-size:112px;margin-top:40px}
+#s2 .sub{font-size:34px;margin-top:26px}
+#s2 .kpis-t{bottom:230px;font-size:26px}
+#s2 .kpi{padding:30px 24px 28px;min-height:190px}
+#s2 .kpi .v{font-size:48px}
+#s2 .kpi .l{font-size:21px;margin-top:10px}
+#s3 .col{top:200px}
+#s3 .sist{gap:62px;margin-top:30px}
+#s3 .fila .t{font-size:32px}
+#s3 .fila .t span:last-child{font-size:23px}
+#s3 .barra{height:30px;margin-top:16px}
+#s3 .hueco{margin-top:70px;font-size:34px;max-width:780px}
+#s3 .insight{top:190px;padding:44px 50px}
+#s3 .insight .q{font-size:46px}
+#s3 .insight .src{font-size:22px}
+#s3 .raiz{top:700px;padding:34px 40px}
+#s3 .raiz b{font-size:56px}
+#s3 .raiz span{font-size:26px}
+#s4 .mat{top:150px;height:700px}
+#s4 .pide{top:160px;width:640px}
+#s4 .pide h3{font-size:28px;margin-bottom:24px}
+#s4 .p{padding:34px 34px;margin-bottom:22px}
+#s4 .p b{font-size:42px}
+#s4 .p .vs{margin-top:16px}
+#s4 .p .vs i{font-size:20px;padding:6px 14px}
+#s9 .gen{font-size:36px;padding:38px 44px;margin-top:40px}
+#s9 .tabla{margin-top:40px}
+#s9 .tabla > div{padding:26px 20px;font-size:31px}
+#s9 .tabla .h{font-size:18px;padding-top:6px;padding-bottom:12px}
+#s11 .heat{top:170px;grid-template-columns:repeat(5,128px);grid-template-rows:repeat(5,118px);gap:8px}
+#s11 .heat div{font-size:24px}
+#s11 .heat .marc{width:36px;height:36px;font-size:16px}
+#s11 .ejes{top:810px;font-size:20px}
+#s11 .lista{left:760px;top:170px;gap:20px}
+#s11 .r{padding:30px 28px;grid-template-columns:66px 1fr 240px}
+#s11 .r .s{width:66px;height:66px;font-size:28px}
+#s11 .r b{font-size:32px}
+#s11 .r .due{font-size:24px}
+#s12 .comp{top:150px;gap:20px}
+#s12 .c{padding:26px 30px;grid-template-columns:230px 1fr}
+#s12 .c .t{font-size:56px}
+#s12 .c b{font-size:30px}
+#s14 .bsc{margin-top:50px;gap:24px}
+#s14 .per{padding:30px 26px;gap:18px;min-height:640px}
+#s14 .per h3{font-size:21px}
+#s14 .k{padding:24px 22px}
+#s14 .k b{font-size:27px}
+#s14 .bm .b{font-size:36px}
+#s14 .bm .m{font-size:58px}
+#s14 .k span{font-size:18px}
+#s14 .nota{font-size:24px;margin-top:30px}
+#s15 .rm{top:200px;height:640px}
+#s15 .eje{top:250px}
+#s15 .mes{top:274px;font-size:19px}
+#s15 .h .rombo{margin-top:233px;width:42px;height:42px}
+#s15 .h .tt{bottom:auto;top:40px}
+#s15 .h .tt b{font-size:30px}
+#s15 .h .tt span{font-size:20px}
+#s15 .h .pts{margin-top:60px;font-size:60px}
+#s15 .h .pts small{font-size:18px}
+#s15 .piloto .lab{font-size:21px;width:220px}
+#s15 .d{padding:20px 18px;font-size:18px}
+#s15 .d b{font-size:24px}
+#s10 .proceso{margin-top:50px}
+#s10 .caja{padding:26px 22px}
+#s10 .dos{grid-template-columns:1fr 1fr;margin-top:40px;min-height:470px}
+#s10 .lado{padding:40px 44px;display:flex;flex-direction:column}
+#s10 .lado .q{font-size:22px;margin-top:6px}
+#s10 .pasos-enc{display:flex;flex-direction:column;gap:18px;margin-top:26px}
+#s10 .pasos-enc div{display:flex;gap:16px;align-items:center;font-size:27px}
+#s10 .pasos-enc svg{flex:none}
+#s10 .regla{margin-top:auto;display:flex;gap:16px}
+#s10 .regla div{flex:1;padding:16px 20px;border-radius:16px;background:var(--chip);display:flex;align-items:baseline;gap:12px}
+#s10 .regla b{font-size:44px;color:var(--verde3);letter-spacing:-.03em}
+#s10 .regla span{font-size:19px;color:var(--gris)}
+
+#s2 .kpis-t{bottom:222px}
+#s2 .kpi .v{font-size:42px;white-space:nowrap}
+#s9 .gen{margin-top:30px;font-size:34px;padding:32px 40px}
+#s9 .tabla{margin-top:26px}
+#s9 .tabla > div{padding:19px 20px;font-size:28px}
+#s10 .pasos-enc{gap:26px;margin-top:34px}
+#s10 .pasos-enc div{font-size:30px}
+#s10 .ajuste{font-size:29px}
+#s11 .lista{gap:14px}
+#s11 .r{padding:24px 28px}
+#s14 .per{min-height:560px}
+#s14 .bm{white-space:nowrap}
+#s14 .bm .m{font-size:50px}
+#s14 .bm .b{font-size:30px}
+#s15 .h .tt b{font-size:26px}
+#s15 .h .tt span{font-size:18px}
+
+/* lámina 3 · problema + voces */
+#s3 .problema{display:flex;align-items:center;gap:30px;padding:30px 40px;border-radius:24px;background:#FBEAEE}
+#s3 .problema span{flex:none;font-size:20px;font-weight:800;color:#fff;background:var(--rojo);padding:10px 18px;border-radius:12px;letter-spacing:.02em}
+#s3 .problema b{font-size:44px;letter-spacing:-.03em;line-height:1.15;font-weight:800}
+#s3 .problema em{font-style:normal;color:var(--rojo)}
+#s3 .izq{position:absolute;left:0;top:230px;width:760px}
+#s3 .der{position:absolute;left:840px;right:0;top:230px}
+#s3 h3{font-size:26px;color:var(--gris);font-weight:700;margin-bottom:26px}
+#s3 .sist{gap:40px;margin-top:0}
+#s3 .raiz{position:static;margin-top:46px;width:auto;padding:30px 36px}
+#s3 .voz{padding:24px 30px;border-radius:22px;background:#fff;box-shadow:0 14px 40px rgba(40,50,10,.08),0 0 0 1px rgba(0,0,0,.04);margin-bottom:16px}
+#s3 .voz p{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1.25}
+#s3 .voz mark{background:linear-gradient(transparent 60%,var(--oro2) 60%);color:inherit}
+#s3 .voz .quien{margin-top:10px;font-size:19px;color:var(--gris)}
+#s3 .voz .quien b{color:var(--tinta)}
+#s3 .voz .cli{color:var(--verde);font-weight:700}
+#s3 .fuente{font-size:17px;color:var(--gris2);margin-top:6px}
+/* ronda 2 */
+#s4 .pide{top:150px;width:680px;left:1040px}
+#s4 .pide h3{font-size:24px;margin-bottom:16px}
+#s4 .p{padding:20px 26px;margin-bottom:12px}
+#s4 .p b{font-size:32px}
+#s4 .p .vs{margin-top:10px;flex-wrap:wrap}
+#s4 .p .vs i{font-size:17px;padding:6px 12px}
+#s4 .ley9{margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;font-size:19px;color:var(--gris)}
+#s4 .ley9 b{color:var(--tinta);margin-right:6px}
+#s4 .ley9 .nota9{font-size:16px;color:var(--gris2);font-style:italic}
+.mitad h1{font-size:50px;max-width:1080px}
+.mitad .datos{top:150px}
+.mitad .valida{margin-top:0;margin-bottom:18px;padding:20px 26px}
+.mitad .valida p{font-size:27px}
+.mitad .valida span{font-size:16px}
+.paso{align-items:flex-start;padding:10px 0}
+.paso .bola{margin-top:4px}
+.paso .tx b{font-size:28px}
+.paso .tx span{display:block;font-size:20px;color:var(--gris);line-height:1.35;margin-top:2px}
+.mitad .meta{margin-top:14px}
+#s9 .tabla{grid-template-columns:1fr 760px 280px}
+#s9 .tabla > div{font-size:25px;padding:16px 18px}
+#s10 .proceso{margin-top:34px}
+#s10 .caja{padding:20px 20px}
+#s10 .caja b{font-size:25px}
+#s10 .caja span{font-size:18px}
+#s10 .dos{margin-top:26px;min-height:0;grid-template-columns:.9fr 1.1fr}
+#s10 .lado{padding:28px 34px}
+#s10 .lado h3{font-size:30px}
+#s10 .lado .q{font-size:19px;color:var(--verde);font-weight:700;margin-top:4px}
+#s10 .terreno{font-size:58px;font-weight:800;letter-spacing:-.03em;color:var(--verde3);margin-top:18px}
+#s10 .exp{font-size:23px;line-height:1.4;margin-top:10px}
+#s10 .ajuste{font-size:21px;margin-top:14px;align-items:flex-start;line-height:1.35}
+#s10 .ajuste i{margin-top:2px}
+#s10 .regla2{margin-top:16px;padding:14px 18px;border-radius:14px;background:var(--chip);font-size:19px;line-height:1.4}
+#s10 .regla2 b{color:var(--verde3)}
+#s10 .nielsen{margin-top:22px;padding:18px 26px;border-radius:18px;background:var(--verde3);color:#F4F0E8;font-size:23px;line-height:1.4}
+#s10 .nielsen b{color:#fff}
+#s10 .nielsen mark{background:none;color:var(--oro2);font-weight:700}
+#s12 .c .t{font-size:44px}
+#s12 .c b{font-size:25px}
+#s13 .lado{top:150px}
+#s13 .total{font-size:72px}
+#s13 .porque{margin-top:22px;display:flex;flex-direction:column;gap:12px}
+#s13 .porque div{padding:16px 20px;border-radius:16px;background:var(--chip)}
+#s13 .porque b{display:block;font-size:20px}
+#s13 .porque span{font-size:17px;color:var(--gris);line-height:1.4;display:block;margin-top:4px}
+#s13 .eq{margin-top:16px;padding:20px 22px}
+#s13 .eq h3{font-size:19px}
+#s13 .eq div{font-size:17px}
+#s14 .bsc{margin-top:36px}
+#s14 .per{min-height:530px}
+#s14 .k b{font-size:22px}
+#s14 .bm{white-space:normal;flex-wrap:wrap}
+#s14 .bm .b{font-size:24px}
+#s14 .bm .m{font-size:46px}
+#s14 .nota{font-size:19px}
+#s15 .leyrm{margin-top:16px;font-size:24px;color:var(--gris)}
+#s15 .leyrm b{color:var(--tinta)}
+#s15 .rm{top:230px}
+#s15 .mes{white-space:nowrap}
+#s2 .kpis-t{bottom:250px}
+#s14 .bsc{margin-top:26px}
+#s14 .per{min-height:0;padding:22px 20px;gap:12px}
+#s14 .k{padding:16px 18px}
+#s14 .k b{font-size:20px}
+#s14 .bm{margin-top:4px}
+#s14 .bm .m{font-size:40px}
+#s14 .nota{margin-top:18px;font-size:18px}
+#s2 .kpi{display:flex;flex-direction:column;justify-content:space-between}
+#s2 .kpi .l{margin-top:0;font-size:19px;color:var(--tinta);font-weight:600}
+#s2 .kpi .v{margin-top:14px}
+.seccion{position:absolute;top:42px;right:64px;display:flex;align-items:center;gap:10px;padding:10px 22px;border-radius:30px;background:var(--verde3);color:#fff;font-size:22px;font-weight:700;letter-spacing:.01em}
+.seccion::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--oro)}
+
+/* lámina 3 y 3b · versión para proyector */
+#s3 .problema{position:static;margin-top:40px;display:flex;align-items:center;gap:30px;padding:34px 44px;border-radius:26px;background:#FBEAEE}
+#s3 .problema span{flex:none;font-size:22px;font-weight:800;color:#fff;background:var(--rojo);padding:10px 20px;border-radius:12px}
+#s3 .problema b{font-size:44px;letter-spacing:-.03em;line-height:1.15;font-weight:800}
+#s3 .problema em{font-style:normal;color:var(--rojo)}
+#s3 .voces{margin-top:40px;display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+#s3 .voz{margin:0;padding:34px 34px 30px;border-radius:24px;background:#fff;box-shadow:0 18px 50px rgba(40,50,10,.10),0 0 0 1px rgba(0,0,0,.05);display:flex;flex-direction:column;justify-content:space-between;min-height:300px}
+#s3 .voz p{font-size:36px;font-weight:700;letter-spacing:-.02em;line-height:1.22}
+#s3 .voz mark{background:linear-gradient(transparent 60%,var(--oro2) 60%);color:inherit}
+#s3 .voz .quien{margin-top:22px;font-size:23px;color:var(--gris);line-height:1.35}
+#s3 .voz .quien b{color:var(--tinta)}
+#s3 .voz .cli{color:var(--verde);font-weight:700}
+#s3 .fuente{margin-top:22px;font-size:20px;color:var(--gris)}
+#s3b .izq{position:absolute;left:0;top:220px;width:860px}
+#s3b .der{position:absolute;left:960px;right:0;top:220px}
+#s3b .sist{display:flex;flex-direction:column;gap:56px}
+#s3b .fila .t{display:flex;justify-content:space-between;align-items:baseline;font-size:36px;font-weight:700}
+#s3b .fila .t span:last-child{font-size:26px;color:var(--gris);font-weight:600}
+#s3b .barra{height:34px;border-radius:18px;background:var(--chip);margin-top:16px;overflow:hidden}
+#s3b .barra.fina{height:16px;margin-top:8px}
+#s3b .barra i{display:block;height:100%;width:0;border-radius:18px;background:linear-gradient(90deg,var(--verde),var(--verde2));transition:width 1.6s var(--ease)}
+#s3b .barra i.sub2{background:linear-gradient(90deg,var(--oro),var(--oro2))}
+#s3b .raiz{padding:48px 52px;border-radius:28px;background:var(--verde3);color:#fff}
+#s3b .raiz span{font-size:24px;font-weight:700;color:var(--oro2)}
+#s3b .raiz b{display:block;font-size:88px;letter-spacing:-.04em;margin-top:6px}
+#s3b .raiz p{font-size:30px;line-height:1.35;color:#E3EBD2;margin-top:14px}
+#s3b .consecuencia{margin-top:30px;font-size:32px;line-height:1.35;color:var(--gris)}
+#s3b .consecuencia b{color:var(--rojo)}
+#s3 .problema{margin-top:56px}
+#s3 .voces{margin-top:56px}
+#s3 .voz{min-height:360px}
+#s3 .voz p{font-size:40px}
+#s3b .izq,#s3b .der{top:270px}
+/* títulos a todo el ancho */
+h1{max-width:none;text-wrap:pretty}
+.mitad h1{max-width:none;font-size:50px}
+.tel{top:120px;height:740px;width:380px}
+#s9 .smart{position:static;margin-top:18px}
+#s3b .fila .t span:first-child{font-size:34px}
+#s3b .fila .t span:last-child{font-size:24px}
+#s3b .nota-b{font-size:22px;color:var(--gris);margin-top:8px}
+/* lámina de validación: aprovechar el espacio */
+#s10 .proceso{margin-top:40px}
+#s10 .caja{padding:26px 24px}
+#s10 .caja b{font-size:30px}
+#s10 .caja span{font-size:21px;margin-top:8px}
+#s10 .dos{margin-top:34px}
+#s10 .lado{padding:36px 42px}
+#s10 .lado h3{font-size:34px}
+#s10 .lado .q{font-size:21px}
+#s10 .terreno{font-size:80px;margin-top:26px}
+#s10 .exp{font-size:27px;margin-top:16px}
+#s10 .ajuste{font-size:24px;margin-top:18px}
+#s10 .ajuste i{font-size:18px;padding:6px 11px}
+#s10 .regla2{font-size:22px;margin-top:22px;padding:16px 20px}
+#s10 .nielsen{margin-top:34px;padding:26px 34px;font-size:27px}
+#s10 .proceso{margin-top:30px}
+#s10 .caja{padding:20px 22px}
+#s10 .caja b{font-size:28px}
+#s10 .caja span{font-size:20px}
+#s10 .dos{margin-top:24px}
+#s10 .lado{padding:28px 36px}
+#s10 .terreno{font-size:66px;margin-top:14px}
+#s10 .exp{font-size:25px}
+#s10 .ajuste{font-size:22px;margin-top:12px}
+#s10 .regla2{font-size:20px;margin-top:16px}
+#s10 .nielsen{margin-top:22px;padding:20px 30px;font-size:24px}
+#s13 .porque b{font-size:23px}
+#s13 .porque span{font-size:20px}
+#s13 .eq h3{font-size:22px}
+#s13 .eq div{font-size:20px}
+#s13 .eq p{font-size:17px}
+#s11 .ejes{top:800px;width:680px;font-size:20px;line-height:1.4;color:var(--gris)}
+#s11 .ejes b{color:var(--tinta)}
+#s11 .heat{top:150px}
+#s11 .lista{top:150px;gap:12px}
+#s11 .r{padding:18px 26px}
+#s11 .r b{font-size:28px}
+#s11 .r .desc{display:block;font-size:20px;color:var(--gris);margin-top:4px;line-height:1.3}
+/* SLA rediseñado */
+#s12 .triwrap{position:absolute;left:-20px;top:150px;width:760px;height:660px}
+#s12 .tri2 .borde{stroke-dasharray:1;stroke-dashoffset:1}
+.on#s12 .tri2 .borde{animation:traza 2s .3s var(--ease) forwards}
+#s12 .viaje{opacity:0}
+.on#s12 .viaje{animation:aparece .6s 2.2s forwards}
+@keyframes aparece{to{opacity:1}}
+#s12 .vx{position:absolute;width:300px;margin-left:-150px;margin-top:-62px;text-align:center}
+#s12 .vx.abajo{margin-top:-62px}
+#s12 .vx .bola{width:124px;height:124px;margin:0 auto;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:21px;box-shadow:0 16px 40px rgba(40,50,10,.25),0 0 0 8px #fff}
+#s12 .vx span{display:block;margin-top:12px;font-size:21px;color:var(--gris);font-weight:600;line-height:1.3}
+#s12 .vx.abajo span{margin-top:12px}
+#s12 .centro2{position:absolute;left:230px;top:330px;width:300px;text-align:center;font-size:24px;color:var(--verde3);line-height:1.25}
+#s12 .centro2 b{font-size:40px;letter-spacing:-.02em}
+#s12 .reloj{position:absolute;left:800px;right:0;top:150px}
+#s12 .reloj h3{font-size:26px;color:var(--gris);margin-bottom:18px}
+#s12 .linea-reloj{position:relative;padding-left:0}
+#s12 .linea-reloj::before{content:"";position:absolute;left:118px;top:20px;bottom:20px;width:4px;border-radius:2px;background:linear-gradient(var(--verde),var(--oro))}
+#s12 .hito-r{position:relative;display:grid;grid-template-columns:240px 1fr;gap:26px;align-items:center;padding:14px 0}
+#s12 .hito-r .tiempo{justify-self:start;padding:12px 18px;border-radius:16px;background:var(--verde3);color:#fff;font-size:28px;font-weight:800;letter-spacing:-.02em;white-space:nowrap;position:relative;z-index:1;min-width:236px;text-align:center}
+#s12 .hito-r .tiempo small{font-size:17px;font-weight:600;color:var(--oro2)}
+#s12 .hito-r b{display:block;font-size:27px;letter-spacing:-.01em;line-height:1.2}
+#s12 .hito-r span{display:block;font-size:19px;color:var(--gris);margin-top:4px}
+#s12 .otif{margin-top:22px;display:flex;align-items:center;gap:26px;padding:20px 28px;border-radius:24px;background:var(--chip);position:relative}
+#s12 .otif svg{flex:none}
+#s12 .otif .aro{stroke-dasharray:0 100}
+.on#s12 .otif .aro{animation:aro 1.8s 2.4s var(--ease) forwards}
+@keyframes aro{to{stroke-dasharray:96 100}}
+#s12 .otif-n{position:absolute;left:28px;width:150px;text-align:center;font-size:36px;font-weight:800;color:var(--verde3);letter-spacing:-.03em}
+#s12 .otif-t b{display:block;font-size:30px;letter-spacing:-.02em}
+#s12 .otif-t span{display:block;font-size:20px;color:var(--gris);margin-top:4px}
+#s12 .vx{margin-top:-70px}
+#s12 .vx .bola{width:140px;height:140px;font-size:20px}
+#s12 .vx.arriba span{position:absolute;left:0;right:0;bottom:100%;margin:0 0 14px}
+#s12 .triwrap{top:170px}
+#s13 .eq h3{display:flex;align-items:center;gap:10px;font-size:22px}
+#s13 .eq .cuadro{width:16px;height:16px;border-radius:4px;background:#1E2E0B;box-shadow:0 0 0 2px #fff}
+#s13 .eq .porq{font-size:18px;color:#D9E4C2;line-height:1.4;margin:8px 0 10px}
+#s13 .porque{gap:10px}
+/* BSC llena la lámina */
+#s14 .bsc{margin-top:34px;align-items:stretch}
+#s14 .per{min-height:650px;padding:24px 22px;gap:14px}
+#s14 .per h3{font-size:22px}
+#s14 .k{flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 22px}
+#s14 .k b{font-size:24px;line-height:1.2}
+#s14 .bm{margin-top:10px}
+#s14 .bm .b{font-size:28px}
+#s14 .bm .m{font-size:54px}
+#s14 .nota{margin-top:20px;font-size:20px}
+#s14 .per{min-height:630px}
+#s15 .piloto{align-items:stretch;gap:12px}
+#s15 .piloto .lab{display:flex;align-items:center;font-size:21px;width:200px}
+#s15 .d{padding:16px 16px;font-size:18px;line-height:1.35;color:var(--gris)}
+#s15 .d b{font-size:20px;margin-bottom:6px;line-height:1.2}
+#s15 .d.dec{color:var(--tinta)}
+#s15 .rm{height:660px}
+#s15 .rm{top:180px;height:690px}
+#s15 .mes{top:282px}
+/* notas del orador */
+#notas{position:fixed;left:0;right:0;bottom:0;max-height:38vh;overflow:auto;background:rgba(27,23,18,.94);color:#F4F0E8;font-size:20px;line-height:1.5;padding:22px 34px;display:none;z-index:50}
+#notas.ve{display:block}
+#notas b{color:var(--oro2)}
+#ayuda{position:fixed;right:14px;bottom:10px;font-size:13px;color:#B9B2A6;z-index:40;font-family:Inter,sans-serif;transition:opacity 1s}
+:focus-visible{outline:3px solid var(--oro);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.in,.tipeo .ch{opacity:1!important;filter:none!important;translate:0 0!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="viewport"><div id="stage">
+
+<!-- 1 · Portada -->
+<section class="slide" id="s1" data-notas="Buenos días. Somos el equipo Marley Pulse. En 10 minutos les vamos a mostrar cómo Marley puede dejar de perder a sus clientes entre el pedido y la entrega.">
+  <div class="halo" style="left:1100px;top:-200px;width:1100px;height:900px;background:var(--oro)"></div>
+  <div class="halo" style="left:1400px;top:500px;width:800px;height:700px;background:var(--verde2)"></div>
+  <img class="logo in" style="--d:.1" src="assets/logo_marley_tinta.png" alt="Marley Coffee">
+  <div class="titulo in" style="--d:.3">Marley <span>Pulse</span></div>
+  <svg class="pulso" viewBox="0 0 1920 260"><path pathLength="1" d="M 1290 130 L 1420 130 L 1455 60 L 1495 210 L 1535 20 L 1575 170 L 1605 130 L 1920 130"/></svg>
+  <div class="lema in" style="--d:.9">Que ningún cliente de food service tenga que perseguir su pedido.</div>
+  <div class="equipo in" style="--d:1.3"><b>Juan Diego Aracu · Jerko Bakulic · María Isabel Fernández · Camila Muñoz · Cristóbal Olivares · Andrea Ramírez</b><br>Taller Aplicado de Marketing 3 · Ingeniería en Marketing Digital · Docente Ariel Amestica · Duoc UC · noviembre 2026</div>
+</section>
+
+<!-- 2 · Problema -->
+<section class="slide" id="s2" data-notas="<b>El problema es uno solo.</b> Food service es el 63% de las ventas de Marley. Pero cuando el pedido pasa de Comercial a Operaciones, el cliente pierde de vista qué pidió, cuándo llega y quién responde. Y ahí Marley pierde la experiencia. Abajo están las 7 metas que Marley nos pidió mover: todas dependen de resolver esto.">
+  <div class="cuerpo">
+    <div class="grande tipeo" data-tipeo="El cliente pierde de vista su pedido. Marley pierde la experiencia del cliente."></div>
+    <div class="sub in" style="--d:1.6">Y food service es el <b>63 %</b> de las ventas de Marley.</div>
+    <div class="kpis-t in" style="--d:2">Las 7 metas que Marley nos pidió mover</div>
+    <div class="kpis">
+      <div class="kpi in" style="--d:2.1"><div class="l">NPS: cuánto nos recomiendan</div><div class="v">42→52</div></div>
+      <div class="kpi in" style="--d:2.2"><div class="l">Retención anual</div><div class="v">86→90 %</div></div>
+      <div class="kpi in" style="--d:2.3"><div class="l">Ventas food service</div><div class="v">+12 %</div></div>
+      <div class="kpi in" style="--d:2.4"><div class="l">Pedidos digitales en hoteles y restaurantes</div><div class="v">18→40 %</div></div>
+      <div class="kpi in" style="--d:2.5"><div class="l">Entregas completas y a tiempo en oficinas</div><div class="v">96 % <small style="font-size:20px">mín.</small></div></div>
+      <div class="kpi in" style="--d:2.6"><div class="l">Quiebres de stock en oficinas</div><div class="v">−30 %</div></div>
+      <div class="kpi in" style="--d:2.7"><div class="l">Leads B2B calificados</div><div class="v">+25 %</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · Causa raíz -->
+<section class="slide" id="s3" data-notas="<b>El problema:</b> cuando el pedido pasa de Comercial a Operaciones, el cliente pierde de vista el compromiso. Y no lo decimos nosotros: Camila Ugarte, jefa de barra de Zanzíbar, quiere saber a qué hora exacta llega el camión. La encargada de una cafetería independiente dice que si el pedido no llega en 24 horas tiene que estar preguntando. Y Rodrigo Morales, del restaurante Liguria, que es cliente de Marley, guarda siempre un saco de respaldo por si acaso.">
+  <div class="cuerpo">
+    <h1 class="tipeo" data-tipeo="Lo escuchamos de los propios clientes"></h1>
+    <div class="problema in" style="--d:.5"><span>El problema</span><b>Cuando el pedido pasa de Comercial a Operaciones, el cliente <em>pierde de vista el compromiso</em>.</b></div>
+    <div class="voces">
+      <div class="voz in" style="--d:1"><p>Quiere saber <mark>a qué hora exacta llega el camión</mark> con su pedido.</p><div class="quien"><b>Camila Ugarte</b><br>Jefa de Barra, Zanzíbar / BordeRío</div></div>
+      <div class="voz in" style="--d:1.3"><p>Si el pedido no llega en 24 h <mark>tiene que estar preguntando</mark>.</p><div class="quien"><b>Encargada</b><br>Cafetería independiente</div></div>
+      <div class="voz in" style="--d:1.6"><p>Guarda siempre <mark>un saco de café de respaldo</mark>, por si acaso.</p><div class="quien"><b>Rodrigo Morales</b><br>Restaurante Liguria · <span class="cli">cliente Marley</span></div></div>
+    </div>
+    <div class="fuente in" style="--d:1.9">Entrevistas a clientes B2B de hoteles y restaurantes · septiembre 2026</div>
+  </div>
+</section>
+
+<section class="slide" id="s3b" data-notas="¿Por qué pasa? Porque cada área de Marley ve solo una parte del pedido. El sistema de pedidos registra el 95% de las ventas; la base de datos de clientes tiene el 65% de los clientes, y solo con el 40% de sus datos completos; y el registro de fallas técnicas cubre el 75% de las máquinas. Comercial, Operaciones y Soporte tienen versiones distintas del mismo caso, y el seguimiento lo termina haciendo el cliente. <b>La causa raíz es la fragmentación.</b>">
+  <div class="cuerpo">
+    <h1 class="tipeo" data-tipeo="¿Por qué pasa? Cada área ve solo una parte del pedido"></h1>
+    <div class="izq">
+      <div class="sist">
+        <div class="fila in" style="--d:.6"><div class="t"><span>Sistema de pedidos</span><span>registra el 95 % de las ventas</span></div><div class="barra"><i data-w="95"></i></div></div>
+        <div class="fila in" style="--d:.8"><div class="t"><span>Base de datos de clientes</span><span>tiene el 65 % de los clientes</span></div><div class="barra"><i data-w="65"></i></div><div class="barra fina"><i class="sub2" data-w="40"></i></div><div class="nota-b">y solo el 40 % de sus datos está completo</div></div>
+        <div class="fila in" style="--d:1"><div class="t"><span>Registro de fallas técnicas</span><span>cubre el 75 % de las máquinas</span></div><div class="barra"><i data-w="75"></i></div></div>
+      </div>
+    </div>
+    <div class="der">
+      <div class="raiz in" style="--d:1.4"><span>La causa raíz</span><b>Fragmentación</b><p>El pedido cambia de área y nadie conserva el compromiso con el cliente.</p></div>
+      <div class="consecuencia in" style="--d:1.8">Resultado: <b>el seguimiento lo termina haciendo el cliente.</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · Matriz de hallazgos -->
+<section class="slide" id="s4" data-notas="Llevamos todos esos hallazgos a una matriz de impacto y esfuerzo: nueve problemas detectados en la revisión del prototipo. V1 evitar bloqueos y V3 priorizar urgencias se hacen primero. V2, registrar incidencias, se planifica y debe estar listo antes de operar. Y esto conecta directo con lo que Marley nos pidió: <b>visibilidad, trazabilidad y continuidad operativa.</b>">
+  <div class="cuerpo">
+    <h1 class="tipeo" data-tipeo="Primero, lo que más le duele al cliente"></h1>
+    <div class="mat" id="mat"></div>
+    <div class="pide">
+      <h3 class="in" style="--d:1.6">Lo que pidió Marley y qué mejora lo resuelve</h3>
+      <div class="p in" style="--d:1.8"><b>Visibilidad</b><div class="vs"><i style="background:var(--verde2)">V4 Fijar compromisos</i><i style="background:#8C7B6B">V9 Verificar el cierre</i></div></div>
+      <div class="p in" style="--d:2"><b>Trazabilidad</b><div class="vs"><i style="background:var(--oro);color:var(--tinta)">V2 Registrar incidencias</i><i style="background:var(--verde2)">V5 Aclarar responsables</i></div></div>
+      <div class="p in" style="--d:2.2"><b>Continuidad operativa</b><div class="vs"><i style="background:var(--verde)">V1 Evitar bloqueos</i><i style="background:var(--verde)">V3 Priorizar urgencias</i></div></div>
+      <div class="ley9 in" style="--d:2.5">
+        <div><b>V1</b> Evitar que un pedido se bloquee</div><div><b>V6</b> Calificar contactos nuevos</div>
+        <div><b>V2</b> Registrar cada incidencia</div><div><b>V7</b> Simplificar las pantallas</div>
+        <div><b>V3</b> Atender primero lo urgente</div><div><b>V8</b> Precisar las metas</div>
+        <div><b>V4</b> Fijar compromisos con fecha</div><div><b>V9</b> Verificar el cierre de la entrega</div>
+        <div><b>V5</b> Aclarar quién responde</div><div class="nota9">V = mejora detectada en la revisión</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · Solución -->
+<section class="slide" id="s5" data-notas="Por eso nace <b>Marley Pulse</b>. (Clic en el video y dejarlo correr.) Una sola solicitud, de principio a fin: el cliente sabe qué pidió, cuándo llega y quién responde. No reemplaza el ERP, el CRM ni los tickets: los conecta con un folio único. Ahora les mostramos cómo funciona en los tres frentes.">
+  <div class="cuerpo">
+    <h1 class="tipeo" data-tipeo="Para resolverlo, nace Marley Pulse"></h1>
+    <div class="vid in" style="--d:.3" id="vidsol"><video src="assets/video_final.mp4" poster="assets/poster_gancho.jpg" playsinline preload="auto"></video><div class="play"><div><svg width="44" height="44" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#1B1712"/></svg></div></div></div>
+    <div class="pv in" style="--d:.9">Una sola solicitud, <span>de principio a fin</span>.</div>
+  </div>
+</section>
+
+<!-- 6 · Inbound -->
+<section class="slide mitad" id="s6" data-notas="<b>Inbound.</b> Pulse detecta la necesidad antes de que el cliente llame. Ejemplo del informe: a la Panadería Sol le quedan 7 tazas y consume 14 al día: tiene cobertura para medio día. Pulse levanta la alerta, la ordena por criticidad y la asigna a Comercial con el folio ya creado. Con puntaje 4 a 6, Comercial envía la propuesta. Esto empuja retención y leads calificados.">
+  <div class="cuerpo">
+    <h1 class="tipeo" data-tipeo="Inbound: Pulse se adelanta antes de que el cliente llame"></h1>
+    <div class="datos">
+      <div class="valida in" style="--d:.4"><small>Insight que lo valida</small><p>El cliente <mark>llama al ejecutivo y guarda stock extra</mark> para no quedarse sin café.</p><span>Encargada de cafetería: «llama por teléfono insistiendo hasta obtener respuesta» · Rodrigo Morales, Liguria: saco de respaldo</span></div>
+      <div class="flujo" data-flujo>
+        <div class="paso"><div class="bola">1</div><div class="tx"><b>Detecta</b><span>Calcula cuánto café le queda al local según su consumo diario.</span></div></div>
+        <div class="paso"><div class="bola">2</div><div class="tx"><b>Prioriza</b><span>Ordena por urgencia: una máquina detenida va antes que una venta.</span></div></div>
+        <div class="paso"><div class="bola">3</div><div class="tx"><b>Califica</b><span>Evalúa la necesidad y prepara la propuesta para Comercial.</span></div></div>
+        <div class="paso"><div class="bola">4</div><div class="tx"><b>Asigna dueño</b><span>El caso llega al responsable correcto con su número de folio.</span></div></div>
+      </div>
+      <div class="meta in" style="--d:1">Mueve: retención 86→90 % · leads B2B +25 %</div>
+    </div>
+    <div class="tel in" style="--d:.3"><div class="pant"><div class="isla"></div>
+      <div class="alerta" data-el="alerta"><svg class="ico" viewBox="0 0 38 38"><rect width="38" height="38" rx="11" fill="#DB0032"/><path d="M19 9v12M19 26v2" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg><div><b>Panadería Sol · toca reponer</b><span>Cobertura 0,5 días · entrega en 1 día</span></div></div>
+      <div class="app">
+        <div class="barra-app"><div class="ico"></div><b>Prioridades</b><small>lun 8:02</small></div>
+        <div data-lista>
+          <div class="item"><span class="dot" style="background:var(--rojo)"></span><div><div class="n">Hotel Andes</div><div class="d">Máquina sin presión · crítico</div></div><div class="a">Servicio<br>Técnico</div></div>
+          <div class="item"><span class="dot" style="background:#E8891A"></span><div><div class="n">Oficina Costanera</div><div class="d">Stock para 3 días</div></div><div class="a">Logística</div></div>
+          <div class="item"><span class="dot" style="background:var(--oro)"></span><div><div class="n">Cafetería Plaza</div><div class="d">Ciclo habitual cumplido</div></div><div class="a">Comercial</div></div>
+          <div class="item"><span class="dot" style="background:var(--verde2)"></span><div><div class="n">Estación Ruta 68</div><div class="d">Nuevo contacto por QR</div></div><div class="a">Ventas B2B</div></div>
+        </div>
+        <div class="card" data-el="ficha" style="opacity:0;transition:opacity .6s">
+          <h4>Panadería Sol · folio MP-0417</h4>
+          <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px"><span>Cobertura proyectada</span><b data-el="cob">3,0 días</b></div>
+          <div class="medidor"><i data-el="med"></i></div>
+          <div style="display:flex;justify-content:space-between;font-size:14px;margin:14px 0 6px"><span>Puntaje de recompra</span><b data-el="pts">0 / 6</b></div>
+          <div class="medidor"><i data-el="med2" style="background:linear-gradient(90deg,var(--verde),var(--verde2))"></i></div>
+        </div>
+        <div class="boton" data-el="btn" style="opacity:0;transition:opacity .5s">Enviar propuesta al cliente</div>
+      </div>
+      <div class="dedo" data-el="dedo"></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 7 · E-commerce -->
+<section class="slide mitad" id="s7" data-notas="<b>E-commerce.</b> Al cliente le llega la propuesta por su canal registrado: productos, cantidades, precio de contrato y ventana de entrega. Acepta en un toque. Antes de confirmar, Marley valida stock, precio, crédito y ruta, y crea una sola orden en el ERP con el mismo folio: si se reintenta, no se duplica. Esto empuja la reposición digital Horeca de 18 a 40% y las ventas.">
+  <div class="cuerpo">
+    <h1 class="tipeo" data-tipeo="E-commerce: el cliente repone con un clic y sabe cuándo llega"></h1>
+    <div class="datos">
+      <div class="valida in" style="--d:.4"><small>Insight que lo valida</small><p>Sin una <mark>fecha confiable de entrega</mark>, el local no sabe cuánto stock mantener.</p><span>Encargada de cafetería: le genera incertidumbre «la fecha exacta de despacho del pedido»</span></div>
+      <div class="flujo" data-flujo>
+        <div class="paso"><div class="bola">1</div><div class="tx"><b>Propuesta</b><span>El cliente recibe productos, cantidades, precio y horario de entrega.</span></div></div>
+        <div class="paso"><div class="bola">2</div><div class="tx"><b>Acepta o ajusta</b><span>Decide desde su teléfono, sin llamar ni escribir correos.</span></div></div>
+        <div class="paso"><div class="bola">3</div><div class="tx"><b>Valida</b><span>Marley confirma stock, precio, crédito y ruta antes de prometer.</span></div></div>
+        <div class="paso"><div class="bola">4</div><div class="tx"><b>Orden única en ERP</b><span>Se crea un solo pedido con el mismo folio: no hay duplicados.</span></div></div>
+      </div>
+      <div class="meta in" style="--d:1">Mueve: pedidos digitales en hoteles y restaurantes (18→40 %) · ventas +12 %</div>
+    </div>
+    <div class="tel in" style="--d:.3"><div class="pant"><div class="isla"></div>
+      <div class="app">
+        <div class="barra-app"><div class="ico"></div><b>Marley Coffee</b><small>ahora</small></div>
+        <div class="card">
+          <h4>Propuesta de reposición</h4>
+          <div style="font-size:17px;font-weight:700;margin-bottom:10px">Hola, Panadería Sol: te toca reponer</div>
+          <div class="fila-p"><span>Café grano 1 kg</span><b>× 6</b></div>
+          <div class="fila-p"><span>Vasos 8 oz</span><b>× 500</b></div>
+          <div class="fila-p"><span>Precio</span><b>de contrato</b></div>
+          <div class="fila-p"><span>Entrega</span><b>mar 9:00–11:00</b></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1.6fr;gap:10px;margin-bottom:14px">
+          <div class="boton" style="background:#fff;color:var(--tinta);box-shadow:inset 0 0 0 1.5px var(--linea)">Ajustar</div>
+          <div class="boton" data-el="btn">Aceptar</div>
+        </div>
+        <div class="card" data-el="val" style="opacity:0;transition:opacity .5s">
+          <h4>Marley está confirmando</h4>
+          <div class="chk"><i><svg width="13" height="13" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Stock disponible</div>
+          <div class="chk"><i><svg width="13" height="13" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Precio de contrato</div>
+          <div class="chk"><i><svg width="13" height="13" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Crédito vigente</div>
+          <div class="chk"><i><svg width="13" height="13" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Ruta del martes con cupo</div>
+        </div>
+      </div>
+      <div class="toast" data-el="toast"><svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#86A83A"/><path d="M6.5 12.5l3.5 3.5 7.5-8" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Pedido confirmado · folio MP-0417</div>
+      <div class="dedo" data-el="dedo"></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 8 · Logística -->
+<section class="slide mitad" id="s8" data-notas="<b>Logística, por dentro.</b> El equipo interno ve cada pedido en una línea de tiempo: confirmado, preparado, en ruta, entregado. Si la ruta se atrasa, Pulse alerta y el cliente recibe aviso antes de que venza la ventana. Al entregar, Logística acredita con comprobante: hora, punto y cantidades. Y si una máquina falla, Servicio Técnico acusa recibo en 1 hora. Esto empuja OTIF ≥96% y baja los quiebres de stock.">
+  <div class="cuerpo">
+    <h1 class="tipeo" data-tipeo="Logística: cada entrega se cumple y queda demostrada"></h1>
+    <div class="datos" style="width:700px">
+      <div class="valida in" style="--d:.4"><small>Insight que lo valida</small><p>El cliente quiere <mark>trazabilidad de su pedido</mark>: saber dónde está y quién responde.</p><span>Camila Ugarte, Zanzíbar: quiere «seguimiento en tiempo real del camión de despacho»</span></div>
+      <div class="flujo" data-flujo>
+        <div class="paso"><div class="bola">1</div><div class="tx"><b>Prepara y despacha</b><span>Cada estado del pedido queda registrado con hora y responsable.</span></div></div>
+        <div class="paso"><div class="bola">2</div><div class="tx"><b>Alerta de desvío</b><span>Si la ruta se atrasa, se avisa al cliente antes de que venza el horario.</span></div></div>
+        <div class="paso"><div class="bola">3</div><div class="tx"><b>Acredita la entrega</b><span>Comprobante con hora y cantidades; una entrega parcial queda abierta.</span></div></div>
+      </div>
+      <div class="meta in" style="--d:1">Mueve: entregas a tiempo en oficinas (96 %) · quiebres de 6,8 % a 4,76 %</div>
+    </div>
+    <div class="tab in" style="--d:.3"><div class="pant">
+      <div class="barra-app" style="display:flex;align-items:center;gap:12px"><div class="ico" style="width:38px;height:38px;border-radius:11px;background:linear-gradient(140deg,var(--oro),var(--verde2) 50%,var(--verde))"></div><b style="font-size:20px">Seguimiento · Logística</b><small style="margin-left:auto;color:var(--gris)">Ruta martes · camión 3</small></div>
+      <div style="margin-top:18px;font-size:18px;font-weight:700">Panadería Sol · MP-0417 <span style="font-weight:500;color:var(--gris);font-size:15px">· ventana 9:00–11:00</span></div>
+      <div class="linea-t"><div class="prog" data-el="prog"></div>
+        <div class="est" data-est><i><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Confirmado</div>
+        <div class="est" data-est><i><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Preparado</div>
+        <div class="est" data-est><i><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></i>En ruta</div>
+        <div class="est" data-est><i><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Entregado</div>
+      </div>
+      <div class="grid2">
+        <div>
+          <div class="aviso" data-el="av1"><b>Desvío: ruta atrasada 40 min</b>Nueva hora 10:40 · dentro de la ventana. Aviso enviado al encargado del local.</div>
+          <div class="aviso" data-el="av2" style="margin-top:12px;background:#FDE8EE;border-color:#F3A9BC"><b>Hotel Andes · máquina sin presión</b>Servicio Técnico acusó en 38 min · diagnóstico ≤4 h</div>
+        </div>
+        <div class="card" style="margin:0">
+          <h4>Comprobante de entrega</h4>
+          <div class="fila-p"><span>Hora efectiva</span><b data-el="hora">—</b></div>
+          <div class="fila-p"><span>Café grano 1 kg</span><b data-el="c1">— / 6</b></div>
+          <div class="fila-p"><span>Vasos 8 oz</span><b data-el="c2">— / 500</b></div>
+          <div class="boton" data-el="btn" style="margin-top:12px">Acreditar entrega</div>
+        </div>
+      </div>
+      <div class="dedo" data-el="dedo"></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 9 · Objetivos SMART -->
+<section class="slide" id="s9" data-notas="Con la solución lanzada, ¿qué queremos lograr? El objetivo general es <b>diseñar</b> la estrategia para subir el NPS ponderado de 42 a 52 en 12 meses. Y los específicos son SMART: cada uno dice qué, cuánto y cuándo, y salen de lo que pidió Marley: trazabilidad, continuidad y recompra.">
+  <div class="cuerpo">
+    <h1 class="tipeo" data-tipeo="Esto nos comprometemos a lograr con Pulse"></h1>
+    <div class="smart"><span class="in" style="--d:.3">S</span><span class="in" style="--d:.4">M</span><span class="in" style="--d:.5">A</span><span class="in" style="--d:.6">R</span><span class="in" style="--d:.7">T</span></div>
+    <div class="gen in" style="--d:.5">Diseñar una estrategia omnicanal escalable para el food service de Marley que lleve el <b>NPS de 42 a 52 en 12 meses</b>.</div>
+    <div class="tabla">
+      <div class="h in" style="--d:.8">Objetivo específico</div><div class="h in" style="--d:.8">Cuánto</div><div class="h in" style="--d:.8">Cuándo</div>
+      <div class="in" style="--d:1">Pedidos trazables en panaderías</div><div class="c in" style="--d:1">Al menos 95 % de los pedidos con estado y evidencia, en hasta 10 locales</div><div class="c in" style="--d:1">Al día 90 del piloto</div>
+      <div class="in" style="--d:1.2">Responder a tiempo</div><div class="c in" style="--d:1.2">Al menos 90 % respondidas en máximo 4 horas; fallas críticas atendidas en máximo 1 hora</div><div class="c in" style="--d:1.2">Cada semana del piloto</div>
+      <div class="in" style="--d:1.4">Más recompra en su ciclo</div><div class="c in" style="--d:1.4">Más que en sus últimos 3 ciclos de compra</div><div class="c in" style="--d:1.4">Día 90</div>
+      <div class="in" style="--d:1.6">Escalar a los 4 canales</div><div class="c in" style="--d:1.6">36 locales usando Pulse</div><div class="c in" style="--d:1.6">Mes 12</div>
+      <div class="in" style="--d:1.8">Metas anuales de Marley</div><div class="c in" style="--d:1.8">Retención de clientes de 86 % a 90 %; entregas completas y a tiempo en oficinas de al menos 96 %</div><div class="c in" style="--d:1.8">Mes 12</div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 · Validación del MVP -->
+<section class="slide" id="s10" data-notas="Antes de proponerlo, lo pusimos a prueba durante 10 semanas. Primero, con clientes reales: fuimos a su local y comprobamos que el flujo sirve en su operación diaria. Segundo, con un experto: Felipe Muñoz Montecino, que desarrolla soluciones y dirige equipos de desarrollo. Probó el prototipo y nos pidió tres cambios obligatorios. Y no es casualidad que una validación acotada funcione: Jakob Nielsen demostró que con solo cinco usuarios se descubre cerca del 85% de los problemas de usabilidad.">
+  <div class="cuerpo">
+    <h1 class="tipeo" data-tipeo="Antes de proponerlo, lo pusimos a prueba"></h1>
+    <div class="proceso">
+      <div class="caja in" style="--d:.4"><b>1 · Ideas</b><span>Partimos de 13 entrevistas a clientes</span></div>
+      <div class="caja in" style="--d:.6"><b>2 · Prototipo</b><span>Diseñamos 4 pantallas de Pulse</span></div>
+      <div class="caja in" style="--d:.8"><b>3 · Prueba</b><span>Con clientes en su local y con un experto en desarrollo</span></div>
+      <div class="caja in" style="--d:1"><b>4 · Hallazgos</b><span>Detectamos 9 mejoras posibles</span></div>
+      <div class="caja fin in" style="--d:1.2"><b>5 · MVP ajustado</b><span>Aplicamos las 3 más urgentes</span></div>
+    </div>
+    <div class="dos">
+      <div class="lado in" style="--d:1.4">
+        <h3>Con clientes reales, en su propio local</h3>
+        <div class="q">Validación funcional</div>
+        <div class="terreno">En terreno</div>
+        <p class="exp">Encuestamos a clientes en su local para comprobar que el flujo funciona en su operación diaria, no solo en el prototipo.</p>
+      </div>
+      <div class="lado in" style="--d:1.6">
+        <h3>Con un experto: Felipe Muñoz Montecino</h3>
+        <div class="q">Desarrolla soluciones y dirige equipos de desarrollo · probó el prototipo y pidió 3 cambios</div>
+        <div class="ajuste"><i>V1</i><span>Un pedido con un dato mal escrito ya no se bloquea: avanza y solo ese dato queda en revisión.</span></div>
+        <div class="ajuste"><i>V2</i><span>Cada incidencia tiene folio, responsable y cierre, para seguirla de principio a fin.</span></div>
+        <div class="ajuste"><i>V3</i><span>Se atiende primero lo urgente: una máquina detenida va antes que una venta.</span></div>
+        <p class="regla2">Para operar con clientes: <b>al menos 80 % de las tareas sin ayuda y cero errores críticos</b>.</p>
+      </div>
+    </div>
+    <div class="nielsen in" style="--d:1.9"><b>Jakob Nielsen</b> (Nielsen Norman Group, 2000) demostró que probar con solo <mark>5 usuarios permite descubrir cerca del 85 % de los problemas de usabilidad</mark>.</div>
+  </div>
+</section>
+
+<!-- 11 · Riesgos críticos -->
+<section class="slide" id="s11" data-notas="Dentro de la propuesta ya tenemos la matriz de riesgos. Se lee así: cada riesgo se califica por qué tan probable es y qué tan grave sería, de 1 a 5; se multiplican, y mientras más arriba a la derecha, más crítico. Les mostramos solo los cinco críticos, en rojo. Cada uno tiene dueño y una decisión clara. Por ejemplo, si el desarrollo se encarece, TI congela la contratación y prueba primero con el CRM actual.">
+  <div class="cuerpo">
+    <h1 class="tipeo" data-tipeo="Sabemos qué puede fallar y quién responde si pasa"></h1>
+    <div class="heat" id="heat"></div>
+    <div class="ejes"><b>Cómo leerla:</b> cada riesgo vale <b>probabilidad × impacto</b> (de 1 a 5 cada uno). Arriba a la derecha, lo más grave. <span style="color:#5E7E29">■ 1–5 bajo</span> · <span style="color:#B08800">■ 6–12 medio</span> · <span style="color:#DB0032">■ 13–25 crítico</span>. Los círculos negros son nuestros 5 riesgos críticos.</div>
+    <div class="lista">
+      <div class="r in" style="--d:.8"><div class="s">20</div><div><b>Cartera insuficiente</b><span class="desc">Que no haya suficientes panaderías aptas para el piloto.</span></div><div class="due">Comercial</div></div>
+      <div class="r in" style="--d:1"><div class="s">20</div><div><b>Recompra insuficiente</b><span class="desc">Que los clientes no vuelvan a comprar más seguido con Pulse.</span></div><div class="due">Medición</div></div>
+      <div class="r in" style="--d:1.2"><div class="s">16</div><div><b>Sobrecosto técnico</b><span class="desc">Que conectar Pulse con los sistemas cueste más de lo previsto.</span></div><div class="due">TI + Finanzas</div></div>
+      <div class="r in" style="--d:1.4"><div class="s">15</div><div><b>Pedido duplicado o acceso indebido</b><span class="desc">Que un pedido se cree dos veces o alguien vea datos de otro cliente.</span></div><div class="due">TI</div></div>
+      <div class="r in" style="--d:1.6"><div class="s">15</div><div><b>Liquidez insuficiente</b><span class="desc">Que no haya dinero disponible para pagar la siguiente etapa.</span></div><div class="due">Finanzas</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 · SLA -->
+<section class="slide" id="s12" data-notas="Una promesa solo vale si se cumple. Por eso el acuerdo de nivel de servicio amarra tres áreas: <b>Comercial</b> comunica una promesa que ya está validada, <b>Operaciones</b> la cumple y <b>Medición</b> informa el resultado. A la derecha, lo que el cliente recibe y en cuánto tiempo: acuse con folio al instante, respuesta en máximo una hora si su máquina se detiene, en máximo dos horas en hoteles y restaurantes, en máximo cuatro horas la primera respuesta comercial, y al menos 96% de entregas completas y a tiempo en oficinas.">
+  <div class="cuerpo">
+    <h1 class="tipeo" data-tipeo="Una promesa solo vale si se cumple"></h1>
+    <div class="triwrap">
+      <svg class="tri2" viewBox="0 0 760 660" width="760" height="660">
+        <defs>
+          <linearGradient id="gtri" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5E7E29"/><stop offset=".55" stop-color="#86A83A"/><stop offset="1" stop-color="#F2B705"/></linearGradient>
+          <radialGradient id="gcen" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#F7D35A" stop-opacity=".45"/><stop offset="1" stop-color="#F7D35A" stop-opacity="0"/></radialGradient>
+        </defs>
+        <path d="M380 95 L660 545 L100 545 Z" fill="url(#gcen)"/>
+        <path id="ptri" class="borde" pathLength="1" d="M380 95 L660 545 L100 545 Z" fill="none" stroke="url(#gtri)" stroke-width="10" stroke-linejoin="round"/>
+        <circle r="13" fill="#F2B705" class="viaje"><animateMotion dur="5s" repeatCount="indefinite" rotate="auto"><mpath href="#ptri"/></animateMotion></circle>
+        <circle r="26" fill="#F2B705" opacity=".25" class="viaje"><animateMotion dur="5s" repeatCount="indefinite"><mpath href="#ptri"/></animateMotion></circle>
+      </svg>
+      <div class="vx arriba in" style="--d:.5;left:380px;top:95px"><div class="bola" style="background:var(--verde3)">Negocio</div><span>Comercial comunica la promesa</span></div>
+      <div class="vx abajo in" style="--d:.8;left:100px;top:545px"><div class="bola" style="background:var(--oro);color:var(--tinta)">Experiencia</div><span>Medición informa el resultado</span></div>
+      <div class="vx abajo in" style="--d:1.1;left:660px;top:545px"><div class="bola" style="background:var(--verde2)">Operación</div><span>Operaciones la cumple</span></div>
+      <div class="centro2 in" style="--d:1.5">Propuesta de valor<br><b>cumplida</b></div>
+    </div>
+    <div class="reloj">
+      <h3 class="in" style="--d:.6">Lo que recibe el cliente, y en cuánto tiempo</h3>
+      <div class="linea-reloj">
+        <div class="hito-r in" style="--d:1"><div class="tiempo">Al instante</div><div><b>Acuse de recibo con número de folio</b><span>Al registrar cualquier solicitud</span></div></div>
+        <div class="hito-r in" style="--d:1.3"><div class="tiempo">1 hora <small>máx.</small></div><div><b>Respuesta si su máquina se detiene</b><span>Servicio Técnico · diagnóstico en máximo 4 horas</span></div></div>
+        <div class="hito-r in" style="--d:1.6"><div class="tiempo">2 horas <small>máx.</small></div><div><b>Primera respuesta en hoteles y restaurantes</b><span>Comercial · al ampliar el canal</span></div></div>
+        <div class="hito-r in" style="--d:1.9"><div class="tiempo">4 horas <small>máx.</small></div><div><b>Primera respuesta comercial</b><span>Ventas B2B · al menos 90 % a tiempo</span></div></div>
+      </div>
+      <div class="otif in" style="--d:2.2">
+        <svg viewBox="0 0 120 120" width="150" height="150"><circle cx="60" cy="60" r="50" fill="none" stroke="#EFEAE0" stroke-width="14"/><circle class="aro" cx="60" cy="60" r="50" fill="none" stroke="url(#gtri)" stroke-width="14" stroke-linecap="round" pathLength="100" transform="rotate(-90 60 60)"/></svg>
+        <div class="otif-n">96 %</div>
+        <div class="otif-t"><b>Entregas completas y a tiempo</b><span>Meta mínima en oficinas · Operaciones</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 · Presupuesto -->
+<section class="slide" id="s13" data-notas="El presupuesto se libera por hitos. Sumamos lo que faltaba: un <b>equipo dedicado los 12 meses</b>: jefe de proyecto, diseñador UX y analista de datos, con sueldos de mercado. Así el proyecto no depende de una gerencia que ya está ocupada. Reemplazamos las horas sueltas que hacían esas funciones. Total: $207,2 millones con reserva del 10%, el 94% del techo de $220 millones. Si Marley se detiene en el día 90, la exposición es de $58,4 millones.">
+  <div class="cuerpo">
+    <h1 class="tipeo" data-tipeo="Invertimos por etapas, solo si cada hito funciona"></h1>
+    <div class="ley in" style="--d:.4"><span><i style="background:var(--verde3)"></i>Equipo dedicado</span><span><i style="background:var(--verde2)"></i>Tecnología y operación</span><span><i style="background:var(--oro)"></i>Reserva 10 %</span><span><i style="background:var(--oro);height:4px"></i>Acumulado</span></div>
+    <div class="graf" id="graf"></div>
+    <div class="lado">
+      <div class="total in" style="--d:.6"><span class="num" data-cuenta="207.2">$0</span> M <small>en 12 meses</small></div>
+      <div class="pct in" style="--d:.8"><b>94,2 %</b> del techo de $220 M · CLP sin IVA</div>
+      <div class="porque in" style="--d:1">
+        <div><b>Por qué invertir así</b><span>Cada etapa se paga solo si la anterior funcionó. Si el piloto falla, Marley arriesga $58,4 M y no $207,2 M.</span></div>
+        <div><b>Qué esperamos</b><span>Al mes 12: 36 locales con Pulse, NPS de 42 a 52 y retención de 86 % a 90 %.</span></div>
+      </div>
+      <div class="eq in" style="--d:1.2">
+        <h3><i class="cuadro"></i>Quién lo lleva a cabo: un equipo dedicado</h3><p class="porq">Para que Pulse tenga responsables a tiempo completo y no dependa de áreas que ya tienen su propio trabajo. Reporta a Gerencia y es la parte verde oscuro de cada barra.</p>
+        <div><span>Jefe de proyecto · $3,5 M bruto/mes</span><b>$50,4 M</b></div>
+        <div><span>Diseñador/a UX · $2,0 M bruto/mes</span><b>$28,8 M</b></div>
+        <div><span>Analista de datos · $2,0 M bruto/mes</span><b>$28,8 M</b></div>
+        <p>Sueldos de mercado · costo empresa ×1,20 · total equipo $108 M en 12 meses</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 · BSC -->
+<section class="slide" id="s14" data-notas="Así sabremos, con números, si Pulse funciona. Cada indicador tiene su punto de partida, que viene del documento del desafío, y su meta a 12 meses. Dos aclaraciones: la entrega a tiempo en oficinas no tiene una base propia en el desafío, así que la medimos al inicio (como referencia, en hoteles y restaurantes es 92%). Y los leads calificados se miden sobre la cantidad que registre el CRM en las dos primeras semanas.">
+  <div class="cuerpo">
+    <h1 class="tipeo" data-tipeo="Así sabremos, con números, si Pulse está funcionando"></h1>
+    <div class="bsc">
+      <div class="per in" style="--d:.4"><h3>Financiera</h3>
+        <div class="k"><b>Ventas de food service</b><div class="bm"><span class="b">63 % de Marley</span><span class="flecha">→</span><span class="m">+12 %</span></div></div>
+        <div class="k"><b>Locales activos</b><div class="bm"><span class="b">3.390</span><span class="flecha">→</span><span class="m">3.661</span></div></div>
+      </div>
+      <div class="per in" style="--d:.6"><h3>Clientes</h3>
+        <div class="k"><b>NPS: cuánto nos recomiendan</b><div class="bm"><span class="b">42</span><span class="flecha">→</span><span class="m">52</span></div></div>
+        <div class="k"><b>Retención anual de clientes</b><div class="bm"><span class="b">86 %</span><span class="flecha">→</span><span class="m">90 %</span></div></div>
+      </div>
+      <div class="per in" style="--d:.8"><h3>Procesos</h3>
+        <div class="k"><b>Entregas completas y a tiempo en oficinas</b><div class="bm"><span class="b">se mide al inicio*</span><span class="flecha">→</span><span class="m">96 %</span></div></div>
+        <div class="k"><b>Oficinas con quiebre de stock</b><div class="bm"><span class="b">6,8 %</span><span class="flecha">→</span><span class="m">4,76 %</span></div></div>
+        <div class="k"><b>Pedidos digitales en hoteles y restaurantes</b><div class="bm"><span class="b">18 %</span><span class="flecha">→</span><span class="m">40 %</span></div></div>
+      </div>
+      <div class="per in" style="--d:1"><h3>Comercial</h3>
+        <div class="k"><b>Conversión de lead a cliente</b><div class="bm"><span class="b">12 %</span><span class="flecha">→</span><span class="m">18 %</span></div></div>
+        <div class="k"><b>Leads B2B calificados</b><div class="bm"><span class="b">CRM sem. 1–2**</span><span class="flecha">→</span><span class="m">+25 %</span></div></div>
+      </div>
+    </div>
+    <div class="nota in" style="--d:1.4">Punto de partida → meta a 12 meses (Documento Desafío). *Base en hoteles y restaurantes: 92 %. **Leads del CRM en las 2 primeras semanas.</div>
+  </div>
+</section>
+
+<!-- 15 · Roadmap -->
+<section class="slide" id="s15" data-notas="El roadmap en una línea de tiempo. <b>Hito 0</b>: Gerencia autoriza antes del día 1. <b>Hito 1</b>: piloto de 90 días en hasta 10 panaderías. Si funciona, conveniencia en los meses 4 y 5, OCS del 6 al 8 y Horeca del 9 al 12, hasta 36 puntos. Cada rombo es una decisión: se avanza solo con evidencia.">
+  <div class="cuerpo">
+    <h1 class="tipeo" data-tipeo="El camino: de 10 panaderías a 36 puntos en 12 meses"></h1>
+    <div class="leyrm in" style="--d:.4">Cada rombo es un <b>hito</b>: un punto donde Gerencia revisa los resultados y decide si se avanza.</div>
+    <div class="rm" id="rm"></div>
+  </div>
+</section>
+
+<!-- 16 · Cierre -->
+<section class="slide" id="s16" data-notas="Esto es lo que construimos para que ningún cliente tenga que perseguir su pedido. Lo que pedimos hoy: autorizar el piloto de 90 días en 10 panaderías. Muchas gracias.">
+  <div class="cuerpo">
+    <div class="frase in" style="--d:.2">Esto es lo que construimos para que <span>ningún cliente tenga que perseguir su pedido</span>.</div>
+    <div class="pide in" style="--d:.8"><b>Autorizar el piloto</b><span>90 días · hasta 10 panaderías · $58,4 M. Si funciona, Marley libera el siguiente hito.</span></div>
+    <div class="vid in" style="--d:.4" id="vidfin"><video src="assets/video_remate.mp4" poster="assets/poster_remate.jpg" playsinline preload="auto"></video><div class="play"><div><svg width="44" height="44" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#1B1712"/></svg></div></div></div>
+  </div>
+</section>
+
+</div></div>
+<audio id="musica" src="assets/musica_portada.mp3" loop preload="auto"></audio>
+<div id="notas"></div>
+<div id="ayuda">← → avanzar · F pantalla completa · N notas · M silencio</div>
+
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+const stage=document.getElementById('stage');
+let cur=0, timers=[];
+// pie común: marco, logo, franjas Marley y número
+slides.forEach((s,i)=>{
+  s.insertAdjacentHTML('afterbegin','<div class="marco"></div>');
+  if(i>0) s.insertAdjacentHTML('beforeend',`<div class="pie"><img src="assets/logo_marley_tinta.png" alt=""><div class="tri"><i style="background:var(--verde)"></i><i style="background:var(--oro)"></i><i style="background:var(--rojo)"></i></div><span>Marley Pulse · propuesta final</span><span class="n">${i+1} / ${slides.length}</span></div>`);
+});
+// etiqueta de sección: qué es cada lámina
+const SECC={s2:'Problema',s3:'Problema · voz del cliente',s3b:'Causa raíz',s4:'Matriz de impacto y esfuerzo',s5:'Solución · Marley Pulse',s6:'Solución · Inbound',s7:'Solución · E-commerce',s8:'Solución · Logística',
+  s9:'Objetivos SMART',s10:'Validación del MVP',s11:'Matriz de riesgos',s12:'Acuerdo de nivel de servicio (SLA)',s13:'Presupuesto',s14:'Balanced Scorecard · indicadores',s15:'Roadmap',s16:'Cierre'};
+slides.forEach(s=>{if(SECC[s.id])s.insertAdjacentHTML('beforeend',`<div class="seccion">${SECC[s.id]}</div>`)});
+// tipeo con desenfoque, letra a letra
+document.querySelectorAll('[data-tipeo]').forEach(el=>{
+  const t=el.dataset.tipeo; let k=0;
+  el.innerHTML=t.split(' ').map(p=>'<span style="display:inline-block;white-space:nowrap">'+[...p].map(c=>`<span class="ch" style="animation-delay:${(0.15+(k++)*0.022).toFixed(3)}s">${c}</span>`).join('')+'</span>').join(' ');
+});
+function escala(){const s=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+addEventListener('resize',escala);escala();
+const T=(f,ms)=>timers.push(setTimeout(f,ms));
+function limpiar(){timers.forEach(t=>{clearTimeout(t);clearInterval(t)});timers=[]}
+
+
+// ---------- sonido: música solo en portada + efectos sintetizados (sin archivos, sin derechos) ----------
+const musica=document.getElementById('musica');let silencio=false,ac=null,fadeIv=null;
+const VOL_MUSICA=.35;
+function ctx(){if(!ac)ac=new (window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();return ac}
+function tono(f,t0,d,tipo='sine',vol=.12){const a=ctx(),o=a.createOscillator(),g=a.createGain();o.type=tipo;o.frequency.value=f;
+  g.gain.setValueAtTime(0,a.currentTime+t0);g.gain.linearRampToValueAtTime(vol,a.currentTime+t0+.012);g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+t0+d);
+  o.connect(g).connect(a.destination);o.start(a.currentTime+t0);o.stop(a.currentTime+t0+d+.05)}
+const sfx={
+  alerta(){if(silencio)return;tono(880,0,.35,'sine',.10);tono(1320,.11,.45,'sine',.08)},
+  aviso(){if(silencio)return;tono(660,0,.28,'triangle',.09);tono(660,.16,.3,'triangle',.07)},
+  toque(){if(silencio)return;const a=ctx(),n=a.createBufferSource(),b=a.createBuffer(1,a.sampleRate*.03,a.sampleRate),d=b.getChannelData(0);
+    for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,4);const g=a.createGain();g.gain.value=.22;n.buffer=b;n.connect(g).connect(a.destination);n.start();tono(220,0,.06,'sine',.08)},
+  tic(){if(silencio)return;tono(1500,0,.07,'sine',.05)},
+  listo(){if(silencio)return;[523.25,659.25,783.99,1046.5].forEach((f,i)=>tono(f,i*.08,.5,'sine',.08))}
+};
+function musicaFade(obj,ms=1800){clearInterval(fadeIv);const ini=musica.volume,t0=performance.now();
+  if(obj>0&&musica.paused){musica.volume=0;musica.play().catch(()=>{})}
+  fadeIv=setInterval(()=>{const p=Math.min(1,(performance.now()-t0)/ms);musica.volume=ini+(obj-ini)*p;if(p>=1){clearInterval(fadeIv);if(obj===0)musica.pause()}},40)}
+function musicaSegunLamina(){if(!silencio&&cur===0)musicaFade(VOL_MUSICA,1500);else if(!musica.paused)musicaFade(0,1800)}
+// el navegador solo deja sonar audio después de la primera tecla o clic
+addEventListener('keydown',()=>{ctx();if(cur===0&&musica.paused&&!silencio)musicaFade(VOL_MUSICA,1500)},{once:true,capture:true});
+addEventListener('pointerdown',()=>{ctx();if(cur===0&&musica.paused&&!silencio)musicaFade(VOL_MUSICA,1500)},{once:true,capture:true});
+
+// ---------- escenas ----------
+const escenas={
+ s3b(s){s.querySelectorAll('[data-w]').forEach((b,i)=>{b.style.width=0;T(()=>b.style.width=b.dataset.w+'%',700+i*250)})},
+ s5(s){vfv.currentTime=0},
+ s6(s){ciclo(s,inbound,9800)}, s7(s){ciclo(s,ecom,9000)}, s8(s){ciclo(s,logis,10500)},
+ s13(s){const n=s.querySelector('[data-cuenta]');const fin=+n.dataset.cuenta;
+   let k=0;const iv=setInterval(()=>{k++;const p=Math.min(1,k/45),e=1-Math.pow(1-p,4);n.textContent='$'+(fin*e).toFixed(1).replace('.',',');if(p>=1)clearInterval(iv)},40);timers.push(iv);
+   s.querySelectorAll('.bar i').forEach((b,i)=>{b.style.height=0;T(()=>b.style.height=b.dataset.h+'px',400+i*120)})},
+ s15(s){s.querySelectorAll('.h').forEach((h,i)=>{h.style.opacity=0;h.style.transition='opacity .7s, filter .7s';h.style.filter='blur(8px)';T(()=>{h.style.opacity=1;h.style.filter='none'},500+i*600)})},
+ s16(s){rv.currentTime=0;rp.style.opacity=1}
+};
+function ciclo(s,fn,dur){fn(s);T(function r(){fn(s);T(r,dur)},dur)}
+const $=(s,k)=>s.querySelector(`[data-el="${k}"]`);
+function pasos(s,n){s.querySelectorAll('[data-flujo] .paso').forEach((p,i)=>{p.classList.toggle('ya',i<n);p.classList.toggle('act',i===n-1)})}
+function dedo(s,btn,ms){const d=$(s,'dedo'),pant=d.parentElement.getBoundingClientRect(),b=btn.getBoundingClientRect(),k=pant.width/d.parentElement.offsetWidth;
+  d.style.left=((b.left-pant.left)/k+b.width/k/2-23)+'px';d.style.top=((b.top-pant.top)/k+b.height/k/2-23+60)+'px';d.classList.add('ve');
+  T(()=>{d.style.top=(parseFloat(d.style.top)-60)+'px'},60);T(()=>{btn.classList.add('click');sfx.toque()},ms);T(()=>{btn.classList.remove('click');d.classList.remove('ve')},ms+260)}
+function inbound(s){
+  const al=$(s,'alerta'),fi=$(s,'ficha'),bt=$(s,'btn'),lista=s.querySelector('[data-lista]');
+  al.classList.remove('ve');fi.style.opacity=0;bt.style.opacity=0;bt.classList.remove('listo');bt.textContent='Enviar propuesta al cliente';
+  $(s,'med').style.width='15%';$(s,'med2').style.width='0';$(s,'cob').textContent='3,0 días';$(s,'pts').textContent='0 / 6';
+  lista.querySelector('.nuevo')?.remove();pasos(s,0);
+  T(()=>{al.classList.add('ve');pasos(s,1);sfx.alerta()},700);
+  T(()=>{al.classList.remove('ve');const it=document.createElement('div');it.className='item nuevo';it.style.cssText='opacity:0;max-height:0;padding:0 14px;margin:0;box-shadow:0 0 0 2px var(--rojo)';
+    it.innerHTML='<span class="dot" style="background:var(--rojo)"></span><div><div class="n">Panadería Sol</div><div class="d">Cobertura 0,5 días · toca reponer</div></div><div class="a">Comercial</div>';
+    lista.insertBefore(it,lista.children[1]);requestAnimationFrame(()=>{it.style.cssText+=';opacity:1;max-height:80px;padding:13px 14px;margin-bottom:10px'});pasos(s,2)},2600);
+  T(()=>{fi.style.opacity=1;$(s,'med').style.width='92%';let c=3.0;const iv=setInterval(()=>{c=Math.max(.5,c-.25);$(s,'cob').textContent=c.toFixed(1).replace('.',',')+' días';if(c<=.5)clearInterval(iv)},110);timers.push(iv)},3800);
+  T(()=>{$(s,'med2').style.width='83%';let p=0;const iv=setInterval(()=>{p++;$(s,'pts').textContent=p+' / 6';if(p>=5)clearInterval(iv)},230);timers.push(iv);pasos(s,3)},5000);
+  T(()=>{bt.style.opacity=1},6200);
+  T(()=>dedo(s,bt,600),6700);
+  T(()=>{bt.classList.add('listo');bt.textContent='Enviada · Comercial a cargo · MP-0417';pasos(s,4);sfx.listo()},7400);
+}
+function ecom(s){
+  const bt=$(s,'btn'),val=$(s,'val'),to=$(s,'toast');
+  bt.classList.remove('listo');bt.textContent='Aceptar';val.style.opacity=0;to.classList.remove('ve');val.querySelectorAll('.chk').forEach(c=>c.classList.remove('ya'));pasos(s,1);
+  T(()=>dedo(s,bt,700),1400);
+  T(()=>{bt.classList.add('listo');bt.textContent='Aceptado';val.style.opacity=1;pasos(s,2)},2200);
+  val.querySelectorAll('.chk').forEach((c,i)=>T(()=>{c.classList.add('ya');sfx.tic();if(i===0)pasos(s,3)},3000+i*600));
+  T(()=>{to.classList.add('ve');pasos(s,4);sfx.listo()},5800);
+}
+function logis(s){
+  const est=s.querySelectorAll('[data-est]'),pr=$(s,'prog'),bt=$(s,'btn');
+  est.forEach(e=>e.classList.remove('ya','alerta-e'));pr.style.width='0';$(s,'av1').classList.remove('ve');$(s,'av2').classList.remove('ve');
+  bt.classList.remove('listo');bt.textContent='Acreditar entrega';$(s,'hora').textContent='—';$(s,'c1').textContent='— / 6';$(s,'c2').textContent='— / 500';pasos(s,0);
+  const ancho=(i)=>`calc(${(i/3)*100}% - ${40*(i/3)}px)`;
+  T(()=>{est[0].classList.add('ya');pasos(s,1)},500);
+  T(()=>{est[1].classList.add('ya');pr.style.width=ancho(1)},1300);
+  T(()=>{est[2].classList.add('alerta-e');pr.style.width=ancho(2)},2300);
+  T(()=>{$(s,'av1').classList.add('ve');pasos(s,2);sfx.aviso()},2900);
+  T(()=>{$(s,'av2').classList.add('ve');sfx.alerta()},4300);
+  T(()=>{est[2].classList.remove('alerta-e');est[2].classList.add('ya')},5400);
+  T(()=>dedo(s,bt,700),6100);
+  T(()=>{est[3].classList.add('ya');pr.style.width=ancho(3);bt.classList.add('listo');bt.textContent='Entrega acreditada';sfx.listo();$(s,'hora').textContent='10:36';$(s,'c1').textContent='6 / 6';$(s,'c2').textContent='500 / 500';pasos(s,3)},6900);
+}
+
+// ---------- gráficos generados ----------
+(function matriz(){
+  const m=document.getElementById('mat'),W=1000,H=700,x0=70,y0=20,w=W-x0-20,h=H-y0-60;
+  const X=e=>x0+(e-0.5)/5*w, Y=i=>y0+(3.15-i)/(3.15-1)*h; // esfuerzo 0,5–5,5 · impacto 1–3,15
+  const q=(l,t,r,b,bg,col,txt)=>`<div class="cuad" style="left:${l}px;top:${t}px;width:${r-l}px;height:${b-t}px;background:${bg};color:${col}">${txt}</div>`;
+  let html=q(x0,y0,X(2.5),Y(2.6),'#E8EFD9','#3F5A1A','HACER PRIMERO')+q(X(2.5),y0,x0+w,Y(2.6),'#FFF4CC','#8A6500','<span style="float:right">PLANIFICAR</span>')+
+    q(x0,Y(2.6),X(2.5),y0+h,'#F1F5E8','#4F6B22','AJUSTE RÁPIDO')+q(X(2.5),Y(2.6),x0+w,y0+h,'#FBEAEE','#9E0024','ACOTAR O PROGRAMAR');
+  [1,1.5,2,2.6,3].forEach(v=>html+=`<div class="eje" style="left:${x0-52}px;top:${Y(v)-11}px">${String(v).replace('.',',')}</div>`);
+  [1,2,3,4,5].forEach(v=>html+=`<div class="eje" style="left:${X(v)-5}px;top:${y0+h+10}px">${v}</div>`);
+  html+=`<div class="eje" style="left:${x0}px;top:${H-22}px;width:${w}px;text-align:center">Esfuerzo de implementación (1–5) →</div><div class="eje" style="left:-6px;top:${y0+h/2}px;rotate:-90deg;transform-origin:left;translate:0 120px">Impacto ponderado (1–3) →</div>`;
+  const V=[['V1',2.8,2,'Evitar bloqueos','#5E7E29',-.15],['V2',3.0,3,'Registrar incidencias','#D9A300',0],['V3',2.8,2,'Priorizar urgencias','#5E7E29',.2],['V4',2.3,1,'Fijar compromisos','#86A83A',-.05],['V5',2.2,1,'Aclarar responsables','#86A83A',.22],
+    ['V6',2.2,3,'Calificar contactos','#B24B5E',.22],['V7',2.0,4,'Simplificar vistas','#B24B5E',0],['V8',2.3,2,'Precisar metas','#86A83A',.1],['V9',2.3,3,'Verificar el cierre','#B24B5E',-.15]];
+  V.forEach((v,i)=>html+=`<div class="pt" title="${v[3]} · ${String(v[1]).replace('.',',')} / ${v[2]}" style="left:${X(v[2]+v[5])}px;top:${Y(v[1])}px;background:${v[4]};${v[0]==='V2'?'color:#1B1712;':''}transition-delay:${(.6+i*.12).toFixed(2)}s">${v[0]}</div>`);
+  m.innerHTML=html;
+})();
+(function heat(){
+  const h=document.getElementById('heat');let html='';
+  const marcas={'5-4':'20','4-5':'20','4-4':'16','3-5':'15·15'};
+  for(let p=5;p>=1;p--)for(let i=1;i<=5;i++){const v=p*i,bg=v>=13?'#F7C9D3':v>=6?'#FCEFC2':'#E3ECD2';
+    const k=`${p}-${i}`;html+=`<div style="background:${bg}">${v}${marcas[k]?`<span class="marc" style="transition-delay:${.4+Object.keys(marcas).indexOf(k)*.2}s;right:8px;top:8px;${marcas[k].length>2?'width:52px;border-radius:15px;':''}">${marcas[k]}</span>`:''}</div>`}
+  h.innerHTML=html;
+})();
+(function presupuesto(){
+  // M CLP por hito: equipo dedicado (9,0/mes) + resto del plan; ver Presupuesto_con_equipo_dedicado.md
+  const F=[['Hito 1 · Piloto','Meses 1–3 · 10 locales',27.0,31.4],['Hito 2 · Conveniencia','Meses 4–5 · 22 locales',18.0,13.6],['Hito 3 · Oficinas','Meses 6–8 · 28 locales',27.0,14.4],['Hito 4 · Hoteles y restaurantes','Meses 9–12 · 36 locales',36.0,21.0],['Reserva','10 %',0,18.84]];
+  const g=document.getElementById('graf'),base=500,esc=base/220; // 220 M = 500 px
+  let html=`<div class="techo" style="bottom:${60+220*esc}px"><span>Techo $220 M</span></div>`,acum=0,pts=[];
+  F.forEach((f,i)=>{const tot=f[2]+f[3],left=40+i*205;acum+=tot;
+    const segs=i<4?`<i data-h="${(f[2]*esc).toFixed(0)}" style="background:var(--verde3);border-radius:0 0 10px 10px"></i><i data-h="${(f[3]*esc).toFixed(0)}" style="background:var(--verde2);border-radius:10px 10px 0 0"></i>`:`<i data-h="${(f[3]*esc).toFixed(0)}" style="background:var(--oro);border-radius:10px"></i>`;
+    html+=`<div class="col" style="left:${left}px;height:${tot*esc}px"><div class="bar">${segs}</div><div class="val" style="bottom:${tot*esc+10}px">$${tot.toFixed(1).replace('.',',')}</div><div class="lab">${f[0]}<span>${f[1]}</span></div></div>`;
+    pts.push([left+75,560-60-acum*esc]);});
+  const ult=pts[pts.length-1];html+=`<svg class="acum" width="1060" height="560"><path pathLength="1" d="M ${pts.map(p=>p.join(' ')).join(' L ')}"/><circle cx="${ult[0]}" cy="${ult[1]}" r="7" fill="#F2B705"/><text x="${ult[0]-14}" y="${ult[1]+34}" text-anchor="end" font-size="20" font-weight="700" fill="#8A6500">Acumulado $207,2 M</text></svg>`;
+  g.innerHTML=html;
+})();
+(function roadmap(){
+  const r=document.getElementById('rm'),W=1700,X=m=>m/12*W;
+  let html='<div class="eje"><i></i></div>';
+  for(let m=0;m<=12;m++)html+=`<div class="mes" style="left:${X(m)}px">${m===0?'Inicio':'Mes '+m}</div>`;
+  const H=[[0,'Hito 0 · Autorizar','Gerencia aprueba recursos','0',0],[3,'Hito 1 · Panaderías','Piloto de 90 días','10',1],[5,'Hito 2 · Conveniencia','Meses 4 y 5','22',1],[8,'Hito 3 · Oficinas','Meses 6 a 8','28',1],[12,'Hito 4 · Hoteles y restaurantes','Meses 9 a 12','36',2]];
+  H.forEach(h=>html+=`<div class="h" style="left:${X(h[0])}px;width:250px;${h[4]===0?'translate:-17px 0;text-align:left':h[4]===2?'translate:calc(-100% + 17px) 0;text-align:right':''}"><div class="tt"><b>${h[1]}</b><span>${h[2]}</span></div><div class="rombo" style="${h[4]===0?'margin-left:0':h[4]===2?'margin-right:0':''}"></div><div class="pts">${h[3]}<small>locales con Pulse</small></div></div>`);
+  html+=`<div class="piloto">
+    <div class="lab">Qué pasa dentro de los 90 días del piloto</div>
+    <div class="d"><b>Día 14 · Punto de partida</b>Se eligen las panaderías y se mide cómo están hoy.</div><div class="d"><b>Día 28 · Prueba técnica</b>Se comprueba que cada pedido se cree una sola vez y quede registrado.</div><div class="d"><b>Día 31 · Primeros clientes</b>Las primeras panaderías empiezan a usar Pulse.</div><div class="d"><b>Día 56 · Revisión de entregas</b>Logística y Servicio Técnico revisan entregas y fallas abiertas.</div><div class="d"><b>Día 84 · Comparación</b>Se comparan los resultados con el punto de partida.</div><div class="d dec"><b>Día 90 · Decisión</b>Gerencia decide: ampliar, corregir o detener.</div></div>`;
+  r.innerHTML=html;
+})();
+
+// video de la solución: clic para reproducir con sonido
+const vf=document.getElementById('vidsol'),vfv=vf.querySelector('video'),vfp=vf.querySelector('.play');
+vf.addEventListener('click',()=>{if(vfv.paused){vfv.play();vfp.style.opacity=0}else{vfv.pause();vfp.style.opacity=1}});
+vfv.addEventListener('ended',()=>{vfp.style.opacity=1});
+// video de remate (última lámina): clic para reproducir con sonido
+const rf=document.getElementById('vidfin'),rv=rf.querySelector('video'),rp=rf.querySelector('.play');
+rf.addEventListener('click',()=>{if(rv.paused){rv.play();rp.style.opacity=0}else{rv.pause();rp.style.opacity=1}});
+rv.addEventListener('ended',()=>{rp.style.opacity=1});
+
+// ---------- navegación ----------
+const notas=document.getElementById('notas');
+function ir(n){
+  n=Math.max(0,Math.min(slides.length-1,n));limpiar();
+  document.querySelectorAll('video').forEach(v=>{v.pause()});vfp.style.opacity=1;
+  slides[cur].classList.remove('on');
+  // reinicia animaciones de entrada
+  const s=slides[n];s.classList.remove('on');void s.offsetWidth;s.classList.add('on');cur=n;
+  escenas[s.id]?.(s);
+  notas.innerHTML=`<b>${n+1}.</b> `+(s.dataset.notas||'');
+  history.replaceState(null,'','#'+(n+1));
+  if(typeof musicaSegunLamina==='function')musicaSegunLamina();
+}
+addEventListener('keydown',e=>{
+  if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();ir(cur+1)}
+  else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();ir(cur-1)}
+  else if(e.key==='Home')ir(0);else if(e.key==='End')ir(slides.length-1);
+  else if(e.key.toLowerCase()==='f'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}
+  else if(e.key.toLowerCase()==='n')notas.classList.toggle('ve');
+  else if(e.key.toLowerCase()==='m'){silencio=!silencio;if(silencio)musicaFade(0,400);else musicaSegunLamina();document.querySelectorAll('video').forEach(v=>v.muted=silencio||v.hasAttribute('loop'))}
+});
+document.getElementById('viewport').addEventListener('click',e=>{if(e.target.closest('#vidsol')||e.target.closest('#vidfin'))return;ir(e.clientX>innerWidth*0.25?cur+1:cur-1)});
+setTimeout(()=>document.getElementById('ayuda').style.opacity=0,5000);
+ir((parseInt(location.hash.slice(1))||1)-1);
+</script>
+</body>
+</html>
